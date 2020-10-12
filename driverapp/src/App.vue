@@ -1,5 +1,8 @@
 <template>
   <v-app>
+    
+
+
     <v-app-bar
       app
       color="primary"
@@ -38,23 +41,39 @@
     </v-app-bar>
 
     <v-main>
-      <HelloWorld/>
+      <v-container fluid>
+        <tourAnsicht/>
+        <loginLogout/>
+        <!-- If using vue-router -->
+        <router-view></router-view>
+      </v-container>
     </v-main>
+
+    <v-footer app>
+      <bottomNavigation/>
+    </v-footer>
+
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
+import bottomNavigation from './components/bottomNavigation'
+import tourAnsicht from './components/tourAnsicht'
+import loginLogout from './components/loginLogout'
 
 export default {
   name: 'App',
 
-  components: {
-    HelloWorld,
+  data () {
+    return {
+      dialogUser: false
+    }
   },
 
-  data: () => ({
-    //
-  }),
-};
+  components: {
+    bottomNavigation,
+    tourAnsicht,
+    loginLogout
+  },
+}
 </script>
