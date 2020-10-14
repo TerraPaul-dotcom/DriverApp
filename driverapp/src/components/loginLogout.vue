@@ -1,18 +1,18 @@
 <template>
   <v-dialog
-      v-model="dialogUser"
+      v-model="this.$store.getters.dialogLoginLogout"
       fullscreen
       hide-overlay
       transition="dialog-bottom-transition"
     >
-      <template v-slot:activator="{ on }">
-        <v-btn
+      <template v-slot:activator="{  }">
+        <!-- <v-btn
           color="primary"
           dark
           v-on="on"
         >
           Open Dialog
-        </v-btn>
+        </v-btn> -->
       </template>
       <v-card>
         <v-toolbar
@@ -22,7 +22,7 @@
           <v-btn
             icon
             dark
-            @click="dialogUser = false"
+            @click.prevent = "toggleDisplayLoginLogout()"
           >
             <v-icon>mdi-close</v-icon>
           </v-btn>
@@ -42,12 +42,7 @@
           three-line
           subheader
         >
-          <br>
-          <v-row justify="center">
-          <v-btn
-            elevation="4"
-          >Login / Logout</v-btn>
-          </v-row>
+          
           <v-subheader>User Controls</v-subheader>
           <v-list-item>
             <v-list-item-content>
@@ -79,6 +74,14 @@
           </v-list-item>
           
         </v-list>
+        <br>
+        <br>
+        <br>
+          <v-row justify="center">
+          <v-btn
+            elevation="4"
+          >Login / Logout</v-btn>
+          </v-row>
       </v-card>
     </v-dialog>
 </template>
@@ -92,8 +95,14 @@ export default {
     },
     props: {
         dialogUser: Boolean,
+        on: null
 
+    },
+    methods: {
+    toggleDisplayLoginLogout () {
+        this.$store.dispatch("updateLoginLogout", false)
     }
+}
 }
 </script>
 

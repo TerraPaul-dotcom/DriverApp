@@ -1,5 +1,6 @@
 <template>
-  <v-bottom-navigation
+  <v-footer app>
+  <v-bottom-navigation class="bottom-navigation"
     :value="valueBottomNavigation"
     color="teal"
     grow
@@ -17,25 +18,42 @@
     </v-btn>
 
     <v-btn
-      v-on="on">
-      <span>Benutzer*in</span>
+    @click.prevent = "toggleDisplayLoginLogout()"
+      ><span>Benutzer*in</span>
 
       <v-icon>mdi-account</v-icon>
     </v-btn>
+    
   </v-bottom-navigation>
+  </v-footer>
+    
+   
+
 </template>
 
 <script>
+
 export default {
 name: 'Bottom-Navigation',
 
 data: () => ({
     valueBottomNavigation: 1
-  })
+  }),
+
+components: {
+},
+methods: {
+    toggleDisplayLoginLogout () {
+        this.$store.dispatch("updateLoginLogout", true)
+    }
+}
 
 }
 </script>
 
 <style>
+bottom-navigation {
+  padding-top: 10px;
+}
 
 </style>
