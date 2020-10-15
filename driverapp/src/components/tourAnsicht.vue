@@ -15,7 +15,11 @@
           </v-stepper-step>
 
           <v-stepper-content :step="step.stopsReihenfolge + 1"
-            ><v-btn color="primary" @click.prevent="clickStop()">Stop</v-btn>
+            >
+            <v-card
+              class="mx-auto"
+              max-width="500"
+            ><v-btn color="primary" @click.prevent="clickStop()" :disabled="stepStatus> 0" block>Stop</v-btn>
             <v-btn-toggle
               v-model="einstiegJaNein"
               tile
@@ -27,7 +31,7 @@
               <v-btn small @click.prevent="auswahlKeinEinstieg()"> Kein Einstieg </v-btn>
             </v-btn-toggle>
 
-            <v-card class="mx-auto" max-width="400">
+            
               <v-list>
                 <v-list-item-group v-model="selecteOptionsKeinEinstieg" multiple color="indigo" v-if="stepStatus === 3">
                   <v-list-item v-for="(item, i) in itemsKeinEinstieg" :key="i">
@@ -37,8 +41,9 @@
                   </v-list-item>
                 </v-list-item-group>
               </v-list>
+            
+            <v-btn color="primary" @click.prevent="clickWeiterfahrt()" v-if="stepStatus > 1" block>Weiterfahrt </v-btn>
             </v-card>
-            <v-btn color="primary" @click.prevent="clickWeiterfahrt()">Weiterfahrt </v-btn>
           </v-stepper-content>
         </div>
       </v-stepper>
@@ -102,41 +107,41 @@ export default {
       einstiegJaNein: null,
       itemsKeinEinstieg: [
         {
-          text: 'Krankheit'
+          text: "Krankheit",
         },
         {
-          text: 'Unklar'
-        }
+          text: "Unklar",
+        },
       ],
       selecteOptionsKeinEinstieg: [],
       snackbar: false,
-      snackbarText: null
-
+      snackbarText: null,
     };
   },
   computed: {},
   methods: {
-    clickStop (nummerStop) {
-      this.stepStatus = 1
-      this.einstiegJaNein = null
-      return nummerStop
+    clickStop(nummerStop) {
+      this.stepStatus = 1;
+      this.einstiegJaNein = null;
+      return nummerStop;
     },
-    auswahlEinstieg (nummerStop) {
-      this.stepStatus = 2
-      return nummerStop
+    auswahlEinstieg(nummerStop) {
+      this.stepStatus = 2;
+      return nummerStop;
     },
-    auswahlKeinEinstieg (nummerStop) {
-      this.stepStatus = 3
-      return nummerStop
+    auswahlKeinEinstieg(nummerStop) {
+      this.stepStatus = 3;
+      return nummerStop;
     },
-    clickWeiterfahrt (nummerStop) {
-      this.stepStatus = 0
-      this.stepCurrent += 1
-      this.snackbarText = 'Zwischenhalt gespeichert' 
-      this.snackbar = true
-      return nummerStop
-    }
-  }
+    clickWeiterfahrt(nummerStop) {
+      this.stepStatus = 0;
+      this.stepCurrent += 1;
+      this.snackbarText = "Zwischenhalt gespeichert";
+      this.snackbar = true;
+      this.selecteOptionsKeinEinstieg = []; //nach übergabe an die datenbank werte zurücksetzen
+      return nummerStop;
+    },
+  },
 };
 </script>
 
