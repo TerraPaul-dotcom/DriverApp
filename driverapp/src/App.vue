@@ -5,20 +5,16 @@
 
     <v-app-bar
       app
-      color="primary"
+      color="teal"
       light
-    >
-    <v-row justify="center">
-      <startStopTour/>
-    </v-row>
+      dense
+    > Timer
     </v-app-bar>
 
     <v-main>
       <v-container fluid>
         <loginLogout/>
         <tourAnsicht/>
-        <!-- If using vue-router -->
-        <router-view></router-view>
       </v-container>
     </v-main>
 
@@ -58,7 +54,7 @@
 <script>
 import tourAnsicht from './components/tourAnsicht'
 import loginLogout from './components/loginLogout'
-import startStopTour from './components/startStopTour'
+
 
 export default {
   name: 'App',
@@ -68,11 +64,9 @@ export default {
       valueBottomNavigation: 1,
     }
   },
-
   components: {
     tourAnsicht,
     loginLogout,
-    startStopTour
   },
   methods: {
     toggleDisplayLoginLogout () {

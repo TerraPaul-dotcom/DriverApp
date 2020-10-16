@@ -1,72 +1,98 @@
 <template>
   <div id="app">
-    <v-app id="inspire">
-      <v-stepper v-model="stepCurrent" vertical>
-        <div v-for="step in tour" :key="step.stopsReihenfolge">
-          <v-stepper-step
-            :step="step.stopsReihenfolge + 1"
-            :complete="stepCurrent > step.stopsReihenfolge + 1"
-            >{{
-              `${tour[step.stopsReihenfolge].straße}, ${
-                tour[step.stopsReihenfolge].ort
-              }`
-            }}
-            <small>{{ `${tour[step.stopsReihenfolge].name}` }}</small>
-          </v-stepper-step>
+    <v-btn
+      rounded
+      block
+      color="primary"
+      elevation="2"
+      @click.prevent="starteTour()"
+      v-if="stepCurrent === 0"
+    >
+      Starte Tour
+    </v-btn>
 
-          <v-stepper-content :step="step.stopsReihenfolge + 1"
+    <v-stepper v-model="stepCurrent" vertical v-if="stepCurrent <= tour.length">
+      <div v-for="step in tour" :key="step.stopsReihenfolge">
+        <v-stepper-step
+          :step="step.stopsReihenfolge + 1"
+          :complete="stepCurrent > step.stopsReihenfolge + 1"
+          v-if="stepCurrent - 1 <= step.stopsReihenfolge"
+          >{{
+            `${tour[step.stopsReihenfolge].straße}, ${
+              tour[step.stopsReihenfolge].ort
+            }`
+          }}
+          <small>{{ `${tour[step.stopsReihenfolge].name}` }}</small>
+        </v-stepper-step>
+
+        <v-stepper-content :step="step.stopsReihenfolge + 1">
+          <v-card class="mx-auto" max-width="500"
+            ><v-btn
+              color="primary"
+              @click.prevent="clickStop()"
+              :disabled="stepStatus > 0"
+              block
+              >Stop</v-btn
             >
-            <v-card
-              class="mx-auto"
-              max-width="500"
-            ><v-btn color="primary" @click.prevent="clickStop()" :disabled="stepStatus> 0" block>Stop</v-btn>
-            <v-btn-toggle
-              v-model="einstiegJaNein"
-              tile
-              color="deep-purple accent-3"
-              group
+
+            <v-btn
               v-if="stepStatus > 0"
+              block
+              color="success"
+              @click.prevent="auswahlEinstieg()"
             >
-              <v-btn small @click.prevent="auswahlEinstieg()"> Einstieg </v-btn>
-              <v-btn small @click.prevent="auswahlKeinEinstieg()"> Kein Einstieg </v-btn>
-            </v-btn-toggle>
+              Einstieg
+            </v-btn>
+            <v-btn
+              v-if="stepStatus > 0"
+              block
+              color="error"
+              @click.prevent="auswahlKeinEinstieg()"
+            >
+              Kein Einstieg
+            </v-btn>
 
-            
-              <v-list>
-                <v-list-item-group v-model="selecteOptionsKeinEinstieg" multiple color="indigo" v-if="stepStatus === 3">
-                  <v-list-item v-for="(item, i) in itemsKeinEinstieg" :key="i">
-                    <v-list-item-content>
-                      <v-list-item-title v-text="item.text"></v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
-                </v-list-item-group>
-              </v-list>
-            
-            <v-btn color="primary" @click.prevent="clickWeiterfahrt()" v-if="stepStatus > 1" block>Weiterfahrt </v-btn>
-            </v-card>
-          </v-stepper-content>
-        </div>
-      </v-stepper>
+            <v-list>
+              <v-list-item-group
+                v-model="selecteOptionsKeinEinstieg"
+                color="indigo"
+                v-if="stepStatus === 3"
+              >
+                <v-list-item v-for="(item, i) in itemsKeinEinstieg" :key="i">
+                  <v-list-item-content>
+                    <v-list-item-title
+                      v-text="item.text"
+                      @click.prevent="auswahlGrundKeinEinstieg()"
+                    ></v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list-item-group>
+            </v-list>
+          </v-card>
+        </v-stepper-content>
+      </div>
+    </v-stepper>
+    <v-btn
+      rounded
+      block
+      color="primary"
+      elevation="2"
+      @click.prevent="beendeTour()"
+      v-if="stepCurrent === tour.length + 1"
+    >
+      Beende Tour
+    </v-btn>
 
     <!-- Snackbar -->
-    <v-snackbar
-      v-model="snackbar"
-      timeout="3000"
-    >
+    <v-snackbar v-model="snackbar" timeout="3000">
       {{ snackbarText }}
 
       <template v-slot:action="{ attrs }">
-        <v-btn
-          color="pink"
-          text
-          v-bind="attrs"
-          @click="snackbar = false"
-        >
+        <v-btn color="pink" text v-bind="attrs" @click="snackbar = false">
           Close
         </v-btn>
       </template>
     </v-snackbar>
-    </v-app>
   </div>
 </template>
 
@@ -102,7 +128,7 @@ export default {
           stopsReihenfolge: 3,
         },
       ],
-      stepCurrent: 1,
+      stepCurrent: 0,
       stepStatus: 0, //0. Noch keine Eingabe, 1. Stop geklickt 2. Auswahl Einstieg Ja, 3. Auswahl Einstieg Nein, 4. Auswahl Grund kein Einstieg, 5. Weiterfahrt geklickt
       einstiegJaNein: null,
       itemsKeinEinstieg: [
@@ -120,20 +146,15 @@ export default {
   },
   computed: {},
   methods: {
+    starteTour() {
+      this.stepCurrent = 1;
+    },
     clickStop(nummerStop) {
       this.stepStatus = 1;
       this.einstiegJaNein = null;
       return nummerStop;
     },
     auswahlEinstieg(nummerStop) {
-      this.stepStatus = 2;
-      return nummerStop;
-    },
-    auswahlKeinEinstieg(nummerStop) {
-      this.stepStatus = 3;
-      return nummerStop;
-    },
-    clickWeiterfahrt(nummerStop) {
       this.stepStatus = 0;
       this.stepCurrent += 1;
       this.snackbarText = "Zwischenhalt gespeichert";
@@ -141,7 +162,16 @@ export default {
       this.selecteOptionsKeinEinstieg = []; //nach übergabe an die datenbank werte zurücksetzen
       return nummerStop;
     },
+    auswahlKeinEinstieg(nummerStop) {
+      this.stepStatus = 3;
+      return nummerStop;
+    },
+    auswahlGrundKeinEinstieg(nummerStop) {
+      this.auswahlEinstieg(nummerStop);
+    },
+    beendeTour() {},
   },
+  components: {},
 };
 </script>
 
