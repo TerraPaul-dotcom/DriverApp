@@ -1,19 +1,20 @@
 <template>
   <div id="app">
+    <span v-if="!this.$store.getters.tourCurrent.length">Keine Tour Ausgewählt, bitte Tour auswählen.</span>
     <v-btn
       rounded
       block
       color="primary"
       elevation="2"
       @click.prevent="starteTour()"
-      v-if="stepCurrent === 0"
+      v-if="stepCurrent === 0 && this.$store.getters.tourCurrent.length"
       style="margin-bottom: 12px"
     >
       Starte Tour
     </v-btn>
 
     <!-- Progress Bar -->
-    <v-progress-linear :value="((stepCurrent - 1 )/ tour.length ) * 100" color="teal"></v-progress-linear>
+    <v-progress-linear :value="((stepCurrent - 1 )/ tour.length ) * 100" color="teal" v-if="this.$store.getters.tourCurrent.length"></v-progress-linear>
     
     <v-stepper v-model="stepCurrent" vertical v-if="stepCurrent <= tour.length">
       <div v-for="step in tour" :key="step.stopsReihenfolge">
@@ -106,33 +107,6 @@ export default {
   data() {
     return {
       e6: 1,
-      tour: [
-        //Test Tour. Array of Objects, ), Reihenfolge beginnt mit 0
-        {
-          straße: "Seebahnstraße 44",
-          ort: "Waldburg",
-          name: "Nina Meier",
-          stopsReihenfolge: 0,
-        },
-        {
-          straße: "Ottostraße 34",
-          ort: "Waldburg",
-          name: "Olga Müller",
-          stopsReihenfolge: 1,
-        },
-        {
-          straße: "Friedensstrasse 23",
-          ort: "Hasenburg",
-          name: "Hannes Fritz",
-          stopsReihenfolge: 2,
-        },
-        {
-          straße: "Eckstraße 22",
-          ort: "Mittfelden",
-          name: "Karsten Hagen",
-          stopsReihenfolge: 3,
-        },
-      ],
       stepCurrent: 0,
       stepStatus: 0, //0. Noch keine Eingabe, 1. Stop geklickt 2. Auswahl Einstieg Ja, 3. Auswahl Einstieg Nein, 4. Auswahl Grund kein Einstieg, 5. Weiterfahrt geklickt
       einstiegJaNein: null,
@@ -149,19 +123,25 @@ export default {
       snackbarText: null,
     };
   },
-  computed: {},
+  computed: {
+    tour () {return this.$store.getters.tourCurrent}
+  },
   methods: {
     starteTour() {
       this.stepCurrent = 1;
+      this.$emit('start') //timer starten
     },
     clickStop(nummerStop) {
       this.stepStatus = 1;
       this.einstiegJaNein = null;
       return nummerStop;
+      
     },
     auswahlEinstieg(nummerStop) {
       this.stepStatus = 0;
       this.stepCurrent += 1;
+
+      //snackbar
       this.snackbarText = "Zwischenhalt gespeichert";
       this.snackbar = true;
       this.selecteOptionsKeinEinstieg = []; //nach übergabe an die datenbank werte zurücksetzen
@@ -174,7 +154,12 @@ export default {
     auswahlGrundKeinEinstieg(nummerStop) {
       this.auswahlEinstieg(nummerStop);
     },
-    beendeTour() {},
+    beendeTour() {
+       this.$emit('stop') //timer stoppen
+       //snackbar
+      this.snackbarText = "Tour erfolgreich beendet";
+      this.snackbar = true;
+    },
   },
   components: {},
 };
