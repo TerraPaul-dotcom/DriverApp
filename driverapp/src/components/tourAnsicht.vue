@@ -13,7 +13,7 @@
 
     <v-stepper v-model="stepCurrent" vertical v-if="stepCurrent <= tour.length">
       <div v-for="step in tour" :key="step.stopsReihenfolge">
-        <v-stepper-step
+        <v-stepper-step 
           :step="step.stopsReihenfolge + 1"
           :complete="stepCurrent > step.stopsReihenfolge + 1"
           v-if="stepCurrent - 1 <= step.stopsReihenfolge"
@@ -26,7 +26,7 @@
         </v-stepper-step>
 
         <v-stepper-content :step="step.stopsReihenfolge + 1">
-          <v-card class="mx-auto" max-width="500"
+          <v-card class="mx-auto" min-height="200" max-width="500"
             ><v-btn
               color="primary"
               @click.prevent="clickStop()"
@@ -176,4 +176,5 @@ export default {
 </script>
 
 <style>
+
 </style>
