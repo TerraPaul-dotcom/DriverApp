@@ -7,10 +7,14 @@
       elevation="2"
       @click.prevent="starteTour()"
       v-if="stepCurrent === 0"
+      style="margin-bottom: 12px"
     >
       Starte Tour
     </v-btn>
 
+    <!-- Progress Bar -->
+    <v-progress-linear :value="((stepCurrent - 1 )/ tour.length ) * 100" color="teal"></v-progress-linear>
+    
     <v-stepper v-model="stepCurrent" vertical v-if="stepCurrent <= tour.length">
       <div v-for="step in tour" :key="step.stopsReihenfolge">
         <v-stepper-step 
@@ -79,6 +83,7 @@
       elevation="2"
       @click.prevent="beendeTour()"
       v-if="stepCurrent === tour.length + 1"
+      style="margin-top: 100px"
     >
       Beende Tour
     </v-btn>

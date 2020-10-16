@@ -20,6 +20,8 @@
 
     
       <v-footer app>
+  
+
   <v-bottom-navigation class="bottom-navigation"
     :value="valueBottomNavigation"
     color="teal"
