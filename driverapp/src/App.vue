@@ -1,12 +1,20 @@
 <template>
   <v-app>
-    <v-app-bar app color="teal" light dense>
-      <!-- stop-watch -->
-      <v-alert dense v-if="this.$store.getters.tourCurrent.length">{{ formattedElapsedTime }}</v-alert>
+    <v-app-bar app color="light" light dense>
+      <v-container fill-height>
+        <v-spacer></v-spacer>
+        <!-- stop-watch -->
+        <v-span
+          class="float-right"
+          dense
+          v-if="this.$store.getters.tourCurrent.length"
+          >{{ formattedElapsedTime }}</v-span
+        >
+      </v-container>
     </v-app-bar>
 
     <v-main>
-      <v-container fluid>
+      <v-container>
         <loginLogout />
         <tourAuswahl />
         <tourAnsicht @start="start" @stop="stop" />
@@ -17,7 +25,7 @@
       <v-bottom-navigation
         class="bottom-navigation"
         :value="valueBottomNavigation"
-        color="teal"
+        color="light"
         grow
       >
         <v-btn @click.prevent="toggleDisplayTourAuswahl()">
@@ -45,7 +53,7 @@
 <script>
 import tourAnsicht from "./components/tourAnsicht";
 import loginLogout from "./components/loginLogout";
-import tourAuswahl from "./components/tourAuswahl"
+import tourAuswahl from "./components/tourAuswahl";
 
 export default {
   name: "App",
@@ -60,7 +68,7 @@ export default {
   components: {
     tourAnsicht,
     loginLogout,
-    tourAuswahl
+    tourAuswahl,
   },
   methods: {
     toggleDisplayLoginLogout() {

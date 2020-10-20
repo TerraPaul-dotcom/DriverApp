@@ -37,6 +37,6 @@ export default new Vuex.Store ({
         dialogLoginLogout: (state) => state.dialog.loginLogout,
         dialogTourAuswahl: (state) => state.dialog.tourAuswahl,
         tourCurrent: (state) => state.tourCurrent.tour
-    }
+    },
     
 })

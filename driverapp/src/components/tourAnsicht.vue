@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <span v-if="!this.$store.getters.tourCurrent.length">Keine Tour Ausgewählt, bitte Tour auswählen.</span>
+    <span v-if="!this.$store.getters.tourCurrent.length"
+      >Keine Tour Ausgewählt, bitte Tour auswählen.</span
+    >
     <v-btn
       rounded
       block
@@ -14,11 +16,20 @@
     </v-btn>
 
     <!-- Progress Bar -->
-    <v-progress-linear :value="((stepCurrent - 1 )/ tour.length ) * 100" color="teal" v-if="this.$store.getters.tourCurrent.length"></v-progress-linear>
-    
-    <v-stepper v-model="stepCurrent" vertical v-if="stepCurrent <= tour.length">
+    <v-progress-linear
+      :value="((stepCurrent - 1) / tour.length) * 100"
+      color="primary"
+      v-if="this.$store.getters.tourCurrent.length"
+    ></v-progress-linear>
+
+    <v-stepper
+      class="d-flex flex-column mb-6"
+      v-model="stepCurrent"
+      vertical
+      v-if="stepCurrent <= tour.length"
+    >
       <div v-for="step in tour" :key="step.stopsReihenfolge">
-        <v-stepper-step 
+        <v-stepper-step
           :step="step.stopsReihenfolge + 1"
           :complete="stepCurrent > step.stopsReihenfolge + 1"
           v-if="stepCurrent - 1 <= step.stopsReihenfolge"
@@ -31,7 +42,7 @@
         </v-stepper-step>
 
         <v-stepper-content :step="step.stopsReihenfolge + 1">
-          <v-card class="mx-auto" min-height="200" max-width="500"
+          <v-card class="mx-auto" max-width="500"
             ><v-btn
               color="primary"
               @click.prevent="clickStop()"
@@ -124,18 +135,19 @@ export default {
     };
   },
   computed: {
-    tour () {return this.$store.getters.tourCurrent}
+    tour() {
+      return this.$store.getters.tourCurrent;
+    },
   },
   methods: {
     starteTour() {
       this.stepCurrent = 1;
-      this.$emit('start') //timer starten
+      this.$emit("start"); //timer starten
     },
     clickStop(nummerStop) {
       this.stepStatus = 1;
       this.einstiegJaNein = null;
       return nummerStop;
-      
     },
     auswahlEinstieg(nummerStop) {
       this.stepStatus = 0;
@@ -155,8 +167,8 @@ export default {
       this.auswahlEinstieg(nummerStop);
     },
     beendeTour() {
-       this.$emit('stop') //timer stoppen
-       //snackbar
+      this.$emit("stop"); //timer stoppen
+      //snackbar
       this.snackbarText = "Tour erfolgreich beendet";
       this.snackbar = true;
     },
@@ -166,5 +178,4 @@ export default {
 </script>
 
 <style>
-
 </style>
