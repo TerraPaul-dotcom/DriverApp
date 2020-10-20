@@ -4,11 +4,11 @@
       <v-container fill-height>
         <v-spacer></v-spacer>
         <!-- stop-watch -->
-        <v-span
+        <span
           class="float-right"
           dense
           v-if="this.$store.getters.tourCurrent.length"
-          >{{ formattedElapsedTime }}</v-span
+          >{{ formattedElapsedTime }}</span
         >
       </v-container>
     </v-app-bar>

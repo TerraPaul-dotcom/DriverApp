@@ -38,11 +38,11 @@
         </v-list-item>
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>Password</v-list-item-title>
+            <v-list-item-title>GPS test</v-list-item-title>
             <v-list-item-subtitle
-              >Require password for purchase or use password to restrict
-              purchase</v-list-item-subtitle
+              >Testen ob GPS gelesen wird</v-list-item-subtitle
             >
+            <gps />
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -67,12 +67,15 @@
       <br />
       <v-row justify="center">
         <v-btn elevation="4">Login / Logout</v-btn>
+        
       </v-row>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
+import gps from './gps'
+
 export default {
   data() {
     return {
@@ -88,6 +91,9 @@ export default {
       this.$store.dispatch("updateLoginLogout", false);
     },
   },
+  components: {
+    gps
+  }
 };
 </script>
 
