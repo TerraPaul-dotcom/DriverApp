@@ -14,12 +14,23 @@
     >
       Starte Tour
     </v-btn>
+    <v-btn
+      rounded
+      block
+      color="primary"
+      elevation="2"
+      @click.prevent="beendeTour()"
+      v-if="stepCurrent === tour.length + 1"
+      style="margin-bottom: 12px"
+    >
+      Beende Tour
+    </v-btn>
 
     <!-- Progress Bar -->
     <v-progress-linear
       :value="((stepCurrent - 1) / tour.length) * 100"
       color="primary"
-      v-if="this.$store.getters.tourCurrent.length"
+      v-if="stepCurrent <= tour.length"
     ></v-progress-linear>
 
     <v-stepper
@@ -88,17 +99,6 @@
         </v-stepper-content>
       </div>
     </v-stepper>
-    <v-btn
-      rounded
-      block
-      color="primary"
-      elevation="2"
-      @click.prevent="beendeTour()"
-      v-if="stepCurrent === tour.length + 1"
-      style="margin-top: 100px"
-    >
-      Beende Tour
-    </v-btn>
 
     <!-- Snackbar -->
     <v-snackbar v-model="snackbar" timeout="3000">
