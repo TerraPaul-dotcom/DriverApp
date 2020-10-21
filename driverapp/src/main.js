@@ -5,7 +5,6 @@ import vuetify from './plugins/vuetify'
 import store from './store/index.js'
 import vueGeolocation from 'vue-browser-geolocation'
 
-
 Vue.config.productionTip = false
 
 new Vue({

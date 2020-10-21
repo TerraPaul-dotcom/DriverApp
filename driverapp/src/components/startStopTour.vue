@@ -1,43 +1,40 @@
 <template>
   <div>
     <v-btn
-    rounded
-    block
-    dark
-    elevation="2"
-    v-bind:color="type === false ? 'success' : 'error'"
-    @click.prevent = "toggleType()"
+      rounded
+      block
+      dark
+      elevation="2"
+      v-bind:color="type === false ? 'success' : 'error'"
+      @click.prevent="toggleType()"
     >
-    {{ text }}
+      {{ text }}
     </v-btn>
     <v-btn
-              color="primary"
-              @click.prevent="clickStop()"
-              :disabled="stepStatus > 0"
-              block
-              >Stop</v-btn
-            >
+      color="primary"
+      @click.prevent="clickStop()"
+      :disabled="stepStatus > 0"
+      block
+      >Stop</v-btn
+    >
   </div>
 </template>
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       type: true,
       text: 'Starte Tour'
     }
   },
   methods: {
-    toggleType () {
+    toggleType() {
       this.type = !this.type
       this.text = this.type ? 'Starte Tour' : 'Beende Tour'
     }
   }
-
 }
 </script>
 
-<style>
-
-</style>
+<style></style>

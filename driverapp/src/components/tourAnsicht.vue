@@ -123,59 +123,58 @@ export default {
       einstiegJaNein: null,
       itemsKeinEinstieg: [
         {
-          text: "Krankheit",
+          text: 'Krankheit'
         },
         {
-          text: "Unklar",
-        },
+          text: 'Unklar'
+        }
       ],
       selecteOptionsKeinEinstieg: [],
       snackbar: false,
-      snackbarText: null,
-    };
+      snackbarText: null
+    }
   },
   computed: {
     tour() {
-      return this.$store.getters.tourCurrent;
-    },
+      return this.$store.getters.tourCurrent
+    }
   },
   methods: {
     starteTour() {
-      this.stepCurrent = 1;
-      this.$emit("start"); //timer starten
+      this.stepCurrent = 1
+      this.$emit('start') //timer starten
     },
     clickStop(nummerStop) {
-      this.stepStatus = 1;
-      this.einstiegJaNein = null;
-      return nummerStop;
+      this.stepStatus = 1
+      this.einstiegJaNein = null
+      return nummerStop
     },
     auswahlEinstieg(nummerStop) {
-      this.stepStatus = 0;
-      this.stepCurrent += 1;
+      this.stepStatus = 0
+      this.stepCurrent += 1
 
       //snackbar
-      this.snackbarText = "Zwischenhalt gespeichert";
-      this.snackbar = true;
-      this.selecteOptionsKeinEinstieg = []; //nach übergabe an die datenbank werte zurücksetzen
-      return nummerStop;
+      this.snackbarText = 'Zwischenhalt gespeichert'
+      this.snackbar = true
+      this.selecteOptionsKeinEinstieg = [] //nach übergabe an die datenbank werte zurücksetzen
+      return nummerStop
     },
     auswahlKeinEinstieg(nummerStop) {
-      this.stepStatus = 3;
-      return nummerStop;
+      this.stepStatus = 3
+      return nummerStop
     },
     auswahlGrundKeinEinstieg(nummerStop) {
-      this.auswahlEinstieg(nummerStop);
+      this.auswahlEinstieg(nummerStop)
     },
     beendeTour() {
-      this.$emit("stop"); //timer stoppen
+      this.$emit('stop') //timer stoppen
       //snackbar
-      this.snackbarText = "Tour erfolgreich beendet";
-      this.snackbar = true;
-    },
+      this.snackbarText = 'Tour erfolgreich beendet'
+      this.snackbar = true
+    }
   },
-  components: {},
-};
+  components: {}
+}
 </script>
 
-<style>
-</style>
+<style></style>

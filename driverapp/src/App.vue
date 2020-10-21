@@ -51,51 +51,51 @@
 </template>
 
 <script>
-import tourAnsicht from "./components/tourAnsicht";
-import loginLogout from "./components/loginLogout";
-import tourAuswahl from "./components/tourAuswahl";
+import tourAnsicht from './components/tourAnsicht'
+import loginLogout from './components/loginLogout'
+import tourAuswahl from './components/tourAuswahl'
 
 export default {
-  name: "App",
+  name: 'App',
 
   data() {
     return {
       valueBottomNavigation: 1,
       elapsedTime: 0,
-      timer: undefined,
-    };
+      timer: undefined
+    }
   },
   components: {
     tourAnsicht,
     loginLogout,
-    tourAuswahl,
+    tourAuswahl
   },
   methods: {
     toggleDisplayLoginLogout() {
-      this.$store.dispatch("updateLoginLogout", true);
+      this.$store.dispatch('updateLoginLogout', true)
     },
     toggleDisplayTourAuswahl() {
-      this.$store.dispatch("updateTourAuswahl", true);
+      this.$store.dispatch('updateTourAuswahl', true)
     },
     start() {
       this.timer = setInterval(() => {
-        this.elapsedTime += 1000;
-      }, 1000);
+        this.elapsedTime += 1000
+      }, 1000)
     },
     stop() {
-      clearInterval(this.timer);
+      clearInterval(this.timer)
     },
     reset() {
-      this.elapsedTime = 0;
-    },
+      this.elapsedTime = 0
+    }
   },
   computed: {
     formattedElapsedTime() {
-      const date = new Date(null);
-      date.setSeconds(this.elapsedTime / 1000);
-      const utc = date.toUTCString();
-      return utc.substr(utc.indexOf(":") - 2, 8);
-    },
-  },
-};
+      const date = new Date(null)
+      date.setSeconds(this.elapsedTime / 1000)
+      const utc = date.toUTCString()
+      return utc.substr(utc.indexOf(':') - 2, 8)
+    }
+  }
+}
 </script>

@@ -67,7 +67,6 @@
       <br />
       <v-row justify="center">
         <v-btn elevation="4">Login / Logout</v-btn>
-        
       </v-row>
     </v-card>
   </v-dialog>
@@ -79,23 +78,22 @@ import gps from './gps'
 export default {
   data() {
     return {
-      notifications: false,
-    };
+      notifications: false
+    }
   },
   props: {
     dialogUser: Boolean,
-    on: null,
+    on: null
   },
   methods: {
     toggleDisplayLoginLogout() {
-      this.$store.dispatch("updateLoginLogout", false);
-    },
+      this.$store.dispatch('updateLoginLogout', false)
+    }
   },
   components: {
     gps
   }
-};
+}
 </script>
 
-<style>
-</style>
+<style></style>

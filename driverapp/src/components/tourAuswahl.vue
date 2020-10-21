@@ -55,129 +55,128 @@ export default {
         [
           //Test Tour. Array of Objects, ), Reihenfolge beginnt mit 0
           {
-            straße: "Seebahnstraße 44",
-            ort: "Waldburg",
-            name: "Nina Meier",
-            stopsReihenfolge: 0,
+            straße: 'Seebahnstraße 44',
+            ort: 'Waldburg',
+            name: 'Nina Meier',
+            stopsReihenfolge: 0
           },
           {
-            straße: "Ottostraße 34",
-            ort: "Waldburg",
-            name: "Olga Müller",
-            stopsReihenfolge: 1,
+            straße: 'Ottostraße 34',
+            ort: 'Waldburg',
+            name: 'Olga Müller',
+            stopsReihenfolge: 1
           },
           {
-            straße: "Friedensstrasse 23",
-            ort: "Hasenburg",
-            name: "Hannes Fritz",
-            stopsReihenfolge: 2,
+            straße: 'Friedensstrasse 23',
+            ort: 'Hasenburg',
+            name: 'Hannes Fritz',
+            stopsReihenfolge: 2
           },
           {
-            straße: "Eckstraße 22",
-            ort: "Mittfelden",
-            name: "Karsten Hagen",
-            stopsReihenfolge: 3,
-          },
+            straße: 'Eckstraße 22',
+            ort: 'Mittfelden',
+            name: 'Karsten Hagen',
+            stopsReihenfolge: 3
+          }
         ],
         [
           //Test Tour. Array of Objects, ), Reihenfolge beginnt mit 0
           {
-            straße: "AlteStrasse 44",
-            ort: "Waldburg",
-            name: "Anton Meier",
-            stopsReihenfolge: 0,
+            straße: 'AlteStrasse 44',
+            ort: 'Waldburg',
+            name: 'Anton Meier',
+            stopsReihenfolge: 0
           },
           {
-            straße: "Ottostraße 34",
-            ort: "Waldburg",
-            name: "Olga Müller",
-            stopsReihenfolge: 1,
+            straße: 'Ottostraße 34',
+            ort: 'Waldburg',
+            name: 'Olga Müller',
+            stopsReihenfolge: 1
           },
           {
-            straße: "Friedensstrasse 23",
-            ort: "Hasenburg",
-            name: "Hannes Fritz",
-            stopsReihenfolge: 2,
+            straße: 'Friedensstrasse 23',
+            ort: 'Hasenburg',
+            name: 'Hannes Fritz',
+            stopsReihenfolge: 2
           },
           {
-            straße: "Eckstraße 22",
-            ort: "Mittfelden",
-            name: "Karsten Hagen",
-            stopsReihenfolge: 3,
+            straße: 'Eckstraße 22',
+            ort: 'Mittfelden',
+            name: 'Karsten Hagen',
+            stopsReihenfolge: 3
           },
           {
-            straße: "AlteStrasse 44",
-            ort: "Waldburg",
-            name: "Anton Meier",
-            stopsReihenfolge: 4,
+            straße: 'AlteStrasse 44',
+            ort: 'Waldburg',
+            name: 'Anton Meier',
+            stopsReihenfolge: 4
           },
           {
-            straße: "Ottostraße 34",
-            ort: "Waldburg",
-            name: "Olga Müller",
-            stopsReihenfolge: 5,
+            straße: 'Ottostraße 34',
+            ort: 'Waldburg',
+            name: 'Olga Müller',
+            stopsReihenfolge: 5
           },
           {
-            straße: "Friedensstrasse 23",
-            ort: "Hasenburg",
-            name: "Hannes Fritz",
-            stopsReihenfolge: 6,
+            straße: 'Friedensstrasse 23',
+            ort: 'Hasenburg',
+            name: 'Hannes Fritz',
+            stopsReihenfolge: 6
           },
           {
-            straße: "Eckstraße 22",
-            ort: "Mittfelden",
-            name: "Karsten Hagen",
-            stopsReihenfolge: 7,
+            straße: 'Eckstraße 22',
+            ort: 'Mittfelden',
+            name: 'Karsten Hagen',
+            stopsReihenfolge: 7
           },
           {
-            straße: "AlteStrasse 44",
-            ort: "Waldburg",
-            name: "Anton Meier",
-            stopsReihenfolge: 8,
+            straße: 'AlteStrasse 44',
+            ort: 'Waldburg',
+            name: 'Anton Meier',
+            stopsReihenfolge: 8
           },
           {
-            straße: "Ottostraße 34",
-            ort: "Waldburg",
-            name: "Olga Müller",
-            stopsReihenfolge: 9,
+            straße: 'Ottostraße 34',
+            ort: 'Waldburg',
+            name: 'Olga Müller',
+            stopsReihenfolge: 9
           },
           {
-            straße: "Friedensstrasse 23",
-            ort: "Hasenburg",
-            name: "Hannes Fritz",
-            stopsReihenfolge: 10,
+            straße: 'Friedensstrasse 23',
+            ort: 'Hasenburg',
+            name: 'Hannes Fritz',
+            stopsReihenfolge: 10
           },
           {
-            straße: "Eckstraße 22",
-            ort: "Mittfelden",
-            name: "Karsten Hagen",
-            stopsReihenfolge: 11,
-          },
-        ],
-      ],
-    };
+            straße: 'Eckstraße 22',
+            ort: 'Mittfelden',
+            name: 'Karsten Hagen',
+            stopsReihenfolge: 11
+          }
+        ]
+      ]
+    }
   },
   props: {
     dialogTourAuswahl: Boolean,
-    on: null,
+    on: null
   },
   methods: {
     toggleDisplayTourAuswahl() {
-      this.$store.dispatch("updateTourAuswahl", false);
+      this.$store.dispatch('updateTourAuswahl', false)
     },
     tourAuswaehlen(nummerTour) {
       this.$store.dispatch(
-        "updateTourCurrent",
+        'updateTourCurrent',
         this.alleTagesTouren[nummerTour]
-      );
-      this.$store.dispatch("updateTourAuswahl", false);
-    },
+      )
+      this.$store.dispatch('updateTourAuswahl', false)
+    }
   },
   mounted() {
-    this.$store.dispatch("updateTourCurrent", this.alleTagesTouren[0]);
-  },
-};
+    this.$store.dispatch('updateTourCurrent', this.alleTagesTouren[0])
+  }
+}
 </script>
 
-<style>
-</style>
+<style></style>
