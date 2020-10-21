@@ -10,7 +10,7 @@
       elevation="2"
       @click.prevent="starteTour()"
       v-if="stepCurrent === 0 && this.$store.getters.tourCurrent.length"
-      style="margin-bottom: 12px"
+      class="my-5"
     >
       Starte Tour
     </v-btn>
@@ -21,7 +21,7 @@
       elevation="2"
       @click.prevent="beendeTour()"
       v-if="stepCurrent === tour.length + 1"
-      style="margin-bottom: 12px"
+      class="my-5"
     >
       Beende Tour
     </v-btn>
@@ -53,7 +53,7 @@
         </v-stepper-step>
 
         <v-stepper-content :step="step.stopsReihenfolge + 1">
-          <v-card class="mx-auto" max-width="500"
+          <v-card class="mx-auto" min-height="200" max-width="500"
             ><v-btn
               color="primary"
               @click.prevent="clickStop()"
