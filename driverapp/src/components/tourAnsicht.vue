@@ -49,7 +49,7 @@
               tour[step.stopsReihenfolge].ort
             }`
           }}
-          <small>{{ `${tour[step.stopsReihenfolge].name}` }}</small>
+          <small>{{ `${tour[step.stopsReihenfolge].name}, Handicap: ${tour[step.stopsReihenfolge].handicap}` }}</small>
         </v-stepper-step>
 
         <v-stepper-content :step="step.stopsReihenfolge + 1">

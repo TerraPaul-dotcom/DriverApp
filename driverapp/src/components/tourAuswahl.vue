@@ -58,24 +58,28 @@ export default {
             straße: 'Seebahnstraße 44',
             ort: 'Waldburg',
             name: 'Nina Meier',
+            handicap: 'Rollstuhl',
             stopsReihenfolge: 0
           },
           {
             straße: 'Ottostraße 34',
             ort: 'Waldburg',
             name: 'Olga Müller',
+            handicap: 'Rollstuhl',
             stopsReihenfolge: 1
           },
           {
             straße: 'Friedensstrasse 23',
             ort: 'Hasenburg',
             name: 'Hannes Fritz',
+            handicap: 'Rollstuhl',
             stopsReihenfolge: 2
           },
           {
             straße: 'Eckstraße 22',
             ort: 'Mittfelden',
             name: 'Karsten Hagen',
+            handicap: 'Rollstuhl',
             stopsReihenfolge: 3
           }
         ],
