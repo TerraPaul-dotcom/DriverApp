@@ -157,6 +157,16 @@ export default {
             name: 'Karsten Hagen',
             stopsReihenfolge: 11
           }
+        ],
+        [
+          //Test Tour. Array of Objects, ), Reihenfolge beginnt mit 0
+          {
+            straße: 'Seebahnstraße 44',
+            ort: 'Waldburg',
+            name: 'Nina Meier',
+            handicap: 'Rollstuhl',
+            stopsReihenfolge: 0
+          }
         ]
       ]
     }
@@ -178,7 +188,7 @@ export default {
     }
   },
   mounted() {
-    this.$store.dispatch('updateTourCurrent', this.alleTagesTouren[0])
+    this.tourAuswaehlen(2)
   }
 }
 </script>

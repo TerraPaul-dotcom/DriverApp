@@ -3,27 +3,45 @@
     <span v-if="!this.$store.getters.tourCurrent.length"
       >Keine Tour Ausgewählt, bitte Tour auswählen.</span
     >
+
+    <!-- Austieg Schule -->
+      <v-card class="mb-4" v-if="this.stepCurrent === this.tour.length + 1">
+        
+          <v-card-title>Ausstieg</v-card-title>
+          <v-card-subtitle>Ausgestiegene Schüler*innen auswählen</v-card-subtitle>
+           <v-spacer></v-spacer>
+
+          <v-checkbox
+          v-for="(ausstieg, k) in tourProgress"
+          :key="k"
+          :label="tourProgress[k].name"
+          :true-value="true"
+          :false-value="false"
+          color="success"
+          v-model="tourProgress[k].ausgestiegen"
+          class="ml-6">
+          </v-checkbox>
+
+          <v-btn @click.prevent="alleAuswaehlenAusstieg()" small class="ml-6 mb-4">(Alle Auswählen)</v-btn>
+        
+      </v-card>
+      
+
+
+    <!-- Start-Stop-Button -->
     <v-btn
       rounded
       block
       color="primary"
       elevation="2"
-      @click.prevent="starteTour()"
-      v-if="stepCurrent === 0 && this.$store.getters.tourCurrent.length"
+      @click.prevent="starteBeendeTour()"
+      v-if="
+        (stepCurrent === 0 && this.$store.getters.tourCurrent.length) ||
+          stepCurrent === tour.length + 1
+      "
       class="my-5"
     >
-      Starte Tour
-    </v-btn>
-    <v-btn
-      rounded
-      block
-      color="primary"
-      elevation="2"
-      @click.prevent="beendeTour()"
-      v-if="stepCurrent === tour.length + 1"
-      class="my-5"
-    >
-      Beende Tour
+      {{ buttonTextStartStop }}
     </v-btn>
 
     <!-- Progress Bar -->
@@ -33,6 +51,7 @@
       v-if="stepCurrent <= tour.length"
     ></v-progress-linear>
 
+    <!-- Tour Ansicht -->
     <v-stepper
       class="d-flex flex-column mb-6"
       v-model="stepCurrent"
@@ -49,7 +68,11 @@
               tour[step.stopsReihenfolge].ort
             }`
           }}
-          <small>{{ `${tour[step.stopsReihenfolge].name}, Handicap: ${tour[step.stopsReihenfolge].handicap}` }}</small>
+          <small>{{
+            `${tour[step.stopsReihenfolge].name}, Handicap: ${
+              tour[step.stopsReihenfolge].handicap
+            }`
+          }}</small>
         </v-stepper-step>
 
         <v-stepper-content :step="step.stopsReihenfolge + 1">
@@ -66,7 +89,7 @@
               v-if="stepStatus > 0"
               block
               color="success"
-              @click.prevent="auswahlEinstieg()"
+              @click.prevent="auswahlEinstieg(step.stopsReihenfolge)"
             >
               Einstieg
             </v-btn>
@@ -74,7 +97,7 @@
               v-if="stepStatus > 0"
               block
               color="error"
-              @click.prevent="auswahlKeinEinstieg()"
+              @click.prevent="auswahlKeinEinstieg(step.stopsReihenfolge)"
             >
               Kein Einstieg
             </v-btn>
@@ -99,6 +122,7 @@
         </v-stepper-content>
       </div>
     </v-stepper>
+
 
     <!-- Snackbar -->
     <v-snackbar v-model="snackbar" timeout="3000">
@@ -131,46 +155,78 @@ export default {
       ],
       selecteOptionsKeinEinstieg: [],
       snackbar: false,
-      snackbarText: null
+      snackbarText: null,
+      tourProgress: {}
     }
   },
   computed: {
     tour() {
       return this.$store.getters.tourCurrent
+    },
+    buttonTextStartStop() {
+      if (this.$store.getters.tourCurrent.length && this.stepCurrent === 0) {
+        return 'Starte Tour'
+      } else if (this.stepCurrent === this.tour.length + 1) {
+        return 'Beende Tour'
+      } else {
+        return null
+      }
     }
   },
   methods: {
-    starteTour() {
-      this.stepCurrent = 1
-      this.$emit('start') //timer starten
+    starteBeendeTour() {
+      if (this.stepCurrent === 0) {
+        //Button Tour starten
+        this.stepCurrent = 1
+        this.$emit('start')
+        this.tourProgress = this.$store.getters.tourCurrent
+        this.tourProgress.forEach(element => {
+          //temporär, falls key noch nicht existiert
+          element.ausgestiegen = false
+          element.eingestiegen = false
+        })
+      } else {
+        //Button Tour beenden
+        this.$emit('stop')
+
+        //Snackbar
+        this.snackbarText = 'Tour erfolgreich beendet'
+        this.snackbar = true
+      }
     },
     clickStop(nummerStop) {
       this.stepStatus = 1
       this.einstiegJaNein = null
-      return nummerStop
+      return nummerStop //nummerStop ist noch unused
     },
     auswahlEinstieg(nummerStop) {
       this.stepStatus = 0
       this.stepCurrent += 1
+      this.selecteOptionsKeinEinstieg = [] //nach übergabe an die datenbank werte zurücksetzen
+
+      //tour Progress anpassen (Einstiege, Ausstiege usw.)
+      this.tourProgress[nummerStop].eingestiegen = true
+      this.tourProgress[nummerStop].ausgestiegen = false
 
       //snackbar
       this.snackbarText = 'Zwischenhalt gespeichert'
       this.snackbar = true
-      this.selecteOptionsKeinEinstieg = [] //nach übergabe an die datenbank werte zurücksetzen
-      return nummerStop
     },
     auswahlKeinEinstieg(nummerStop) {
       this.stepStatus = 3
-      return nummerStop
+
+      //tour Progress anpassen (Einstiege, Ausstiege usw.)
+      this.tourProgress[nummerStop].eingestiegen = false
+      this.tourProgress[nummerStop].ausgestiegen = false
     },
     auswahlGrundKeinEinstieg(nummerStop) {
       this.auswahlEinstieg(nummerStop)
     },
-    beendeTour() {
-      this.$emit('stop') //timer stoppen
-      //snackbar
-      this.snackbarText = 'Tour erfolgreich beendet'
-      this.snackbar = true
+    alleAuswaehlenAusstieg() {
+      this.tourProgress.forEach(element => {
+        element.ausgestiegen = true
+        element.test = 88
+      })
     }
   },
   components: {}
