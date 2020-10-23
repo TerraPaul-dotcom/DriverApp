@@ -13,7 +13,7 @@
     </template>
     <v-card>
       <v-toolbar dark color="primary">
-        <v-btn icon dark @click.prevent="toggleDisplayLoginLogout()">
+        <v-btn icon dark @click.prevent="tourReset()">
           <v-icon>mdi-close</v-icon>
         </v-btn>
         <v-toolbar-title>Tour</v-toolbar-title>
@@ -26,49 +26,16 @@
           <v-list-item-content>
             <v-list-item-title>Dauer</v-list-item-title>
             <v-list-item-subtitle
-              >Set the content filtering level to restrict apps that can be
-              downloaded</v-list-item-subtitle
+              >{{ this.$store.getters.tourCurrentDauer }}</v-list-item-subtitle
             >
           </v-list-item-content>
         </v-list-item>
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title>GPS test</v-list-item-title>
-            <v-list-item-subtitle
-              >Testen ob GPS gelesen wird</v-list-item-subtitle
-            >
-            <gps />
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-      <v-divider></v-divider>
-      <v-list three-line subheader>
-        <v-subheader>General</v-subheader>
-        <v-list-item>
-          <v-list-item-action>
-            <v-checkbox v-model="notifications"></v-checkbox>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Notifications</v-list-item-title>
-            <v-list-item-subtitle
-              >Notify me about updates to apps or games that I
-              downloaded</v-list-item-subtitle
-            >
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-      <br />
-      <br />
-      <br />
-      <v-row justify="center">
-        <v-btn elevation="4">Login / Logout</v-btn>
-      </v-row>
+      </v-list>  
     </v-card>
   </v-dialog>
 </template>
 
 <script>
-import gps from './gps'
 
 export default {
   data() {
@@ -78,15 +45,15 @@ export default {
   },
   props: {
     dialogUser: Boolean,
-    on: null
+    on: null,
   },
   methods: {
-    toggleDisplayLoginLogout() {
+    tourReset() {
       this.$store.dispatch('updateTourBeendet', false)
+      this.$emit('tourReset')
     }
   },
   components: {
-    gps
   }
 }
 </script>

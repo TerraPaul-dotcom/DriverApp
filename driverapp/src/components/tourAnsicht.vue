@@ -136,7 +136,7 @@
     </v-snackbar>
 
     <!-- tourBeendet-Dialog -->
-      <tourBeendet />
+      <tourBeendet @tourReset="tourReset()"/>
   </div>
 </template>
 
@@ -237,6 +237,14 @@ export default {
       for (let i = 0; i < this.tourProgress.length; i++){
         this.ausstiegAuswahl.push(true)
       }
+    },
+    tourReset() {
+      this.$emit('reset')
+      this.$store.dispatch('updateTourBeendet', false)
+      this.stepStatus = 0
+      this.einstiegJaNein = null
+      this.stepCurrent = 0
+      this.$store.dispatch('updateTourCurrent', [])
     }
   },
 }

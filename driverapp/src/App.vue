@@ -17,7 +17,7 @@
       <v-container>
         <loginLogout />
         <tourAuswahl />
-        <tourAnsicht @start="start" @stop="stop" />
+        <tourAnsicht @start="start" @stop="stop" @reset="reset"/>
       </v-container>
     </v-main>
 
@@ -84,6 +84,7 @@ export default {
     },
     stop() {
       clearInterval(this.timer)
+      this.$store.dispatch('updateTourCurrentDauer', this.formattedElapsedTime)
     },
     reset() {
       this.elapsedTime = 0

@@ -52,7 +52,7 @@ import tour430 from '../Beispieldaten/schuelerliste-tour-T:430.json'
 export default {
   data() {
     return {
-      tour430: tour430.schuelerAlle,
+      tour430: tour430.schuelerAlleKurzeTour,
       notifications: false,
       alleTagesTouren: [
         [
@@ -189,10 +189,7 @@ export default {
       this.$store.dispatch('updateTourAuswahl', false)
     },
     tourAuswaehlen() {
-      this.$store.dispatch(
-        'updateTourCurrent',
-        this.tour430
-      )
+      this.$store.dispatch('updateTourCurrent',this.tour430)
       this.$store.dispatch('updateTourAuswahl', false)
     }
   },
