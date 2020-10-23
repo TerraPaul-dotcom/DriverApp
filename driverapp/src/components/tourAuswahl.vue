@@ -166,6 +166,12 @@ export default {
             name: 'Nina Meier',
             handicap: 'Rollstuhl',
             stopsReihenfolge: 0
+          },
+          {
+            straße: 'Ottostraße 34',
+            ort: 'Waldburg',
+            name: 'Olga Müller',
+            stopsReihenfolge: 1
           }
         ]
       ]

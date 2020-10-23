@@ -11,18 +11,18 @@
           <v-card-subtitle>Ausgestiegene Schüler*innen auswählen</v-card-subtitle>
            <v-spacer></v-spacer>
 
-          <v-checkbox
+          <v-switch
           v-for="(ausstieg, k) in tourProgress"
           :key="k"
           :label="tourProgress[k].name"
           :true-value="true"
           :false-value="false"
           color="success"
-          v-model="tourProgress[k].ausgestiegen"
-          class="ml-6">
-          </v-checkbox>
+          v-model="ausstiegAuswahl[k]"
+          class="ml-4">
+          </v-switch>
 
-          <v-btn @click.prevent="alleAuswaehlenAusstieg()" small class="ml-6 mb-4">(Alle Auswählen)</v-btn>
+          <v-btn @click.prevent="alleAuswaehlenAusstieg()" small class="ml-4 mb-4">Alle Auswählen</v-btn>
         
       </v-card>
       
@@ -161,7 +161,8 @@ export default {
       selecteOptionsKeinEinstieg: [],
       snackbar: false,
       snackbarText: null,
-      tourProgress: {}
+      tourProgress: {},
+      ausstiegAuswahl: []
     }
   },
   components: {
@@ -232,10 +233,10 @@ export default {
       this.auswahlEinstieg(nummerStop)
     },
     alleAuswaehlenAusstieg() {
-      this.tourProgress.forEach(element => {
-        element.ausgestiegen = true
-        element.test = 88
-      })
+      this.ausstiegAuswahl = []
+      for (let i = 0; i < this.tourProgress.length; i++){
+        this.ausstiegAuswahl.push(true)
+      }
     }
   },
 }
