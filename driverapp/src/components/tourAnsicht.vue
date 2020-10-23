@@ -14,7 +14,7 @@
           <v-switch
           v-for="(ausstieg, k) in tourProgress"
           :key="k"
-          :label="tourProgress[k].name"
+          :label="`${tourProgress[k].nachname}, ${tourProgress[k].vorname}`"
           :true-value="true"
           :false-value="false"
           color="success"
@@ -58,24 +58,24 @@
       vertical
       v-if="stepCurrent <= tour.length"
     >
-      <div v-for="step in tour" :key="step.stopsReihenfolge">
+      <div v-for="(step, j) in tour" :key="j">
         <v-stepper-step
-          :step="step.stopsReihenfolge + 1"
-          :complete="stepCurrent > step.stopsReihenfolge + 1"
-          v-if="stepCurrent - 1 <= step.stopsReihenfolge"
+          :step="j + 1"
+          :complete="stepCurrent > j + 1"
+          v-if="stepCurrent - 1 <= j"
           >{{
-            `${tour[step.stopsReihenfolge].straße}, ${
-              tour[step.stopsReihenfolge].ort
+            `${tour[j].strasseUndNummer}, ${
+              tour[j].haltepunktOrtttt
             }`
           }}
           <small>{{
-            `${tour[step.stopsReihenfolge].name}, Handicap: ${
-              tour[step.stopsReihenfolge].handicap
+            `${tour[j].nachname}, ${tour[j].vorname}, Hilfsmittel: ${
+              tour[j].hilfsmittellll?tour[j].hilfsmittellll:'-'
             }`
           }}</small>
         </v-stepper-step>
 
-        <v-stepper-content :step="step.stopsReihenfolge + 1">
+        <v-stepper-content :step="j + 1">
           <v-card class="mx-auto" min-height="200" max-width="500"
             ><v-btn
               color="primary"
@@ -89,7 +89,7 @@
               v-if="stepStatus > 0"
               block
               color="success"
-              @click.prevent="auswahlEinstieg(step.stopsReihenfolge)"
+              @click.prevent="auswahlEinstieg(j)"
             >
               Einstieg
             </v-btn>
@@ -97,7 +97,7 @@
               v-if="stepStatus > 0"
               block
               color="error"
-              @click.prevent="auswahlKeinEinstieg(step.stopsReihenfolge)"
+              @click.prevent="auswahlKeinEinstieg(j)"
             >
               Kein Einstieg
             </v-btn>

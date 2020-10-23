@@ -47,9 +47,12 @@
 </template>
 
 <script>
+import tour430 from '../Beispieldaten/schuelerliste-tour-T:430.json'
+
 export default {
   data() {
     return {
+      tour430: tour430.schuelerAlle,
       notifications: false,
       alleTagesTouren: [
         [
@@ -185,16 +188,16 @@ export default {
     toggleDisplayTourAuswahl() {
       this.$store.dispatch('updateTourAuswahl', false)
     },
-    tourAuswaehlen(nummerTour) {
+    tourAuswaehlen() {
       this.$store.dispatch(
         'updateTourCurrent',
-        this.alleTagesTouren[nummerTour]
+        this.tour430
       )
       this.$store.dispatch('updateTourAuswahl', false)
     }
   },
   mounted() {
-    this.tourAuswaehlen(2)
+    this.tourAuswaehlen()
   }
 }
 </script>
