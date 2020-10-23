@@ -134,10 +134,15 @@
         </v-btn>
       </template>
     </v-snackbar>
+
+    <!-- tourBeendet-Dialog -->
+      <tourBeendet />
   </div>
 </template>
 
 <script>
+import tourBeendet from './tourBeendet'
+
 export default {
   data() {
     return {
@@ -158,6 +163,9 @@ export default {
       snackbarText: null,
       tourProgress: {}
     }
+  },
+  components: {
+    tourBeendet
   },
   computed: {
     tour() {
@@ -188,6 +196,7 @@ export default {
       } else {
         //Button Tour beenden
         this.$emit('stop')
+        this.$store.dispatch('updateTourBeendet', true)
 
         //Snackbar
         this.snackbarText = 'Tour erfolgreich beendet'
@@ -229,7 +238,6 @@ export default {
       })
     }
   },
-  components: {}
 }
 </script>
 
