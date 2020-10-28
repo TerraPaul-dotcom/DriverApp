@@ -47,137 +47,13 @@
 </template>
 
 <script>
-import tour430 from '../Beispieldaten/schuelerliste-tour-T:430.json'
+import beispielTouren from '../Beispieldaten/tourenliste_mit_schuelern_beispiel_anonymisiert.json'
 
 export default {
   data() {
     return {
-      tour430: tour430.schuelerAlleKurzeTour,
+      beispielTouren: beispielTouren.oTourExtListHeute,
       notifications: false,
-      alleTagesTouren: [
-        [
-          //Test Tour. Array of Objects, ), Reihenfolge beginnt mit 0
-          {
-            straße: 'Seebahnstraße 44',
-            ort: 'Waldburg',
-            name: 'Nina Meier',
-            handicap: 'Rollstuhl',
-            stopsReihenfolge: 0
-          },
-          {
-            straße: 'Ottostraße 34',
-            ort: 'Waldburg',
-            name: 'Olga Müller',
-            handicap: 'Rollstuhl',
-            stopsReihenfolge: 1
-          },
-          {
-            straße: 'Friedensstrasse 23',
-            ort: 'Hasenburg',
-            name: 'Hannes Fritz',
-            handicap: 'Rollstuhl',
-            stopsReihenfolge: 2
-          },
-          {
-            straße: 'Eckstraße 22',
-            ort: 'Mittfelden',
-            name: 'Karsten Hagen',
-            handicap: 'Rollstuhl',
-            stopsReihenfolge: 3
-          }
-        ],
-        [
-          //Test Tour. Array of Objects, ), Reihenfolge beginnt mit 0
-          {
-            straße: 'AlteStrasse 44',
-            ort: 'Waldburg',
-            name: 'Anton Meier',
-            stopsReihenfolge: 0
-          },
-          {
-            straße: 'Ottostraße 34',
-            ort: 'Waldburg',
-            name: 'Olga Müller',
-            stopsReihenfolge: 1
-          },
-          {
-            straße: 'Friedensstrasse 23',
-            ort: 'Hasenburg',
-            name: 'Hannes Fritz',
-            stopsReihenfolge: 2
-          },
-          {
-            straße: 'Eckstraße 22',
-            ort: 'Mittfelden',
-            name: 'Karsten Hagen',
-            stopsReihenfolge: 3
-          },
-          {
-            straße: 'AlteStrasse 44',
-            ort: 'Waldburg',
-            name: 'Anton Meier',
-            stopsReihenfolge: 4
-          },
-          {
-            straße: 'Ottostraße 34',
-            ort: 'Waldburg',
-            name: 'Olga Müller',
-            stopsReihenfolge: 5
-          },
-          {
-            straße: 'Friedensstrasse 23',
-            ort: 'Hasenburg',
-            name: 'Hannes Fritz',
-            stopsReihenfolge: 6
-          },
-          {
-            straße: 'Eckstraße 22',
-            ort: 'Mittfelden',
-            name: 'Karsten Hagen',
-            stopsReihenfolge: 7
-          },
-          {
-            straße: 'AlteStrasse 44',
-            ort: 'Waldburg',
-            name: 'Anton Meier',
-            stopsReihenfolge: 8
-          },
-          {
-            straße: 'Ottostraße 34',
-            ort: 'Waldburg',
-            name: 'Olga Müller',
-            stopsReihenfolge: 9
-          },
-          {
-            straße: 'Friedensstrasse 23',
-            ort: 'Hasenburg',
-            name: 'Hannes Fritz',
-            stopsReihenfolge: 10
-          },
-          {
-            straße: 'Eckstraße 22',
-            ort: 'Mittfelden',
-            name: 'Karsten Hagen',
-            stopsReihenfolge: 11
-          }
-        ],
-        [
-          //Test Tour. Array of Objects, ), Reihenfolge beginnt mit 0
-          {
-            straße: 'Seebahnstraße 44',
-            ort: 'Waldburg',
-            name: 'Nina Meier',
-            handicap: 'Rollstuhl',
-            stopsReihenfolge: 0
-          },
-          {
-            straße: 'Ottostraße 34',
-            ort: 'Waldburg',
-            name: 'Olga Müller',
-            stopsReihenfolge: 1
-          }
-        ]
-      ]
     }
   },
   props: {
@@ -188,13 +64,19 @@ export default {
     toggleDisplayTourAuswahl() {
       this.$store.dispatch('updateTourAuswahl', false)
     },
-    tourAuswaehlen() {
-      this.$store.dispatch('updateTourCurrent',this.tour430)
+    tourAuswaehlen(nr) {
+      let ausgewaehlteTour = this.beispielTouren[nr]
+      ausgewaehlteTour.tourAbschnitte.forEach(element => { //Da die Schülerdaten manchmal in schuelerKurz und manchmal in tourenPunktSchule stehen, kopiere falls null
+        if (element.schuelerKurz === null) {
+          element.schuelerKurz = element.tourenPunktSchule
+        }
+      })
+      this.$store.dispatch('updateTourCurrent',this.beispielTouren[nr])
       this.$store.dispatch('updateTourAuswahl', false)
     }
   },
   mounted() {
-    this.tourAuswaehlen()
+    this.tourAuswaehlen(0)
   }
 }
 </script>

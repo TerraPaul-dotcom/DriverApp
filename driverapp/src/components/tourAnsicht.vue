@@ -1,9 +1,8 @@
 <template>
   <div id="app">
-    <span v-if="!this.$store.getters.tourCurrent.length"
+    <span v-if="!this.tour.length"
       >Keine Tour Ausgewählt, bitte Tour auswählen.</span
     >
-
     <!-- Austieg Schule -->
       <v-card class="mb-4" v-if="this.stepCurrent === this.tour.length + 1">
         
@@ -36,7 +35,7 @@
       elevation="2"
       @click.prevent="starteBeendeTour()"
       v-if="
-        (stepCurrent === 0 && this.$store.getters.tourCurrent.length) ||
+        (stepCurrent === 0 && tour.length) ||
           stepCurrent === tour.length + 1
       "
       class="my-5"
@@ -58,19 +57,19 @@
       vertical
       v-if="stepCurrent <= tour.length"
     >
-      <div v-for="(step, j) in tour" :key="j">
+      <div v-for="(abschnitt, j) in tour" :key="j">
         <v-stepper-step
           :step="j + 1"
           :complete="stepCurrent > j + 1"
           v-if="stepCurrent - 1 <= j"
           >{{
-            `${tour[j].strasseUndNummer}, ${
-              tour[j].haltepunktOrtttt
+            `${abschnitt.schuelerKurz.strasseUndNummer}, ${
+              abschnitt.schuelerKurz.haltepunktOrtttt
             }`
           }}
           <small>{{
-            `${tour[j].nachname}, ${tour[j].vorname}, Hilfsmittel: ${
-              tour[j].hilfsmittellll?tour[j].hilfsmittellll:'-'
+            `${abschnitt.schuelerKurz.nachname}, ${abschnitt.schuelerKurz.vorname}, Hilfsmittel: ${
+              abschnitt.schuelerKurz.hilfsmittellll?abschnitt.schuelerKurz.hilfsmittellll:'-'
             }`
           }}</small>
         </v-stepper-step>
@@ -161,7 +160,7 @@ export default {
       selecteOptionsKeinEinstieg: [],
       snackbar: false,
       snackbarText: null,
-      tourProgress: {},
+      tourProgress: [],
       ausstiegAuswahl: []
     }
   },
@@ -170,10 +169,10 @@ export default {
   },
   computed: {
     tour() {
-      return this.$store.getters.tourCurrent
+      return this.$store.getters.tourCurrentAbschnitte
     },
     buttonTextStartStop() {
-      if (this.$store.getters.tourCurrent.length && this.stepCurrent === 0) {
+      if (this.tour.length && this.stepCurrent === 0) {
         return 'Starte Tour'
       } else if (this.stepCurrent === this.tour.length + 1) {
         return 'Beende Tour'
@@ -188,7 +187,7 @@ export default {
         //Button Tour starten
         this.stepCurrent = 1
         this.$emit('start')
-        this.tourProgress = this.$store.getters.tourCurrent
+        this.tourProgress = this.tour
         this.tourProgress.forEach(element => {
           //temporär, falls key noch nicht existiert
           element.ausgestiegen = false

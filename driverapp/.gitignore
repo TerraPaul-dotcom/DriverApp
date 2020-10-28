@@ -2,6 +2,7 @@
 node_modules
 /dist
 
+/src/Beispieldaten/originale-gitignore
 
 # local env files
 .env.local

@@ -48,6 +48,7 @@ export default new Vuex.Store({
     dialogTourAuswahl: state => state.dialog.tourAuswahl,
     dialogTourBeendet: state => state.dialog.tourBeendet,
     tourCurrent: state => state.tourCurrent.tour,
+    tourCurrentAbschnitte: state => state.tourCurrent.tour.tourAbschnitte,
     tourCurrentDauer: state => state.tourCurrent.dauer
   }
 })
