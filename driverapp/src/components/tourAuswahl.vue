@@ -65,8 +65,8 @@ export default {
       this.$store.dispatch('updateTourAuswahl', false)
     },
     tourAuswaehlen(nr) {
-      let ausgewaehlteTour = this.beispielTouren[nr]
-      /* ausgewaehlteTour.tourAbschnitte.forEach(element => { //Da die Schülerdaten manchmal in schuelerKurz und manchmal in tourenPunktSchule stehen, kopiere falls null
+      /*let ausgewaehlteTour = this.beispielTouren[nr]
+       ausgewaehlteTour.tourAbschnitte.forEach(element => { //Da die Schülerdaten manchmal in schuelerKurz und manchmal in tourenPunktSchule stehen, kopiere falls null
         if (element.schuelerKurz === null) {
           element.schuelerKurz = element.tourenPunktSchule
         }

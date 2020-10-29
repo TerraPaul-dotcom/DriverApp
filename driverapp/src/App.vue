@@ -7,7 +7,7 @@
         <span
           class="float-right"
           dense
-          v-if="this.$store.getters.tourCurrent.length"
+          v-if="this.$store.getters.tourCurrent"
           >{{ formattedElapsedTime }}</span
         >
       </v-container>
