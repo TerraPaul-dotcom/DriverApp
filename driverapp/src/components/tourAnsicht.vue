@@ -1,19 +1,19 @@
 <template>
   <div id="app">
-    <span v-if="!this.tour.length"
+    <span v-if="!this.tourAbschnitte.length"
       >Keine Tour Ausgewählt, bitte Tour auswählen.</span
     >
     <!-- Austieg Schule -->
-      <v-card class="mb-4" v-if="this.stepCurrent === this.tour.length + 1">
+      <v-card class="mb-4" v-if="this.stepCurrent === this.tourAbschnitte.length + 1">
         
           <v-card-title>Ausstieg</v-card-title>
           <v-card-subtitle>Ausgestiegene Schüler*innen auswählen</v-card-subtitle>
            <v-spacer></v-spacer>
 
           <v-switch
-          v-for="(ausstieg, k) in tourProgress"
+          v-for="(ausstieg, k) in tourGesamtFortschritt"
           :key="k"
-          :label="`${tourProgress[k].nachname}, ${tourProgress[k].vorname}`"
+          :label="`${tourGesamtFortschritt[k].nachname}, ${tourGesamtFortschritt[k].vorname}`"
           :true-value="true"
           :false-value="false"
           color="success"
@@ -35,8 +35,8 @@
       elevation="2"
       @click.prevent="starteBeendeTour()"
       v-if="
-        (stepCurrent === 0 && tour.length) ||
-          stepCurrent === tour.length + 1
+        (stepCurrent === 0 && tourAbschnitte.length) ||
+          stepCurrent === tourAbschnitte.length + 1
       "
       class="my-5"
     >
@@ -45,9 +45,9 @@
 
     <!-- Progress Bar -->
     <v-progress-linear
-      :value="((stepCurrent - 1) / tour.length) * 100"
+      :value="((stepCurrent - 1) / tourAbschnitte.length) * 100"
       color="primary"
-      v-if="stepCurrent <= tour.length"
+      v-if="stepCurrent <= tourAbschnitte.length"
     ></v-progress-linear>
 
     <!-- Tour Ansicht -->
@@ -55,21 +55,21 @@
       class="d-flex flex-column mb-6"
       v-model="stepCurrent"
       vertical
-      v-if="stepCurrent <= tour.length"
+      v-if="stepCurrent <= tourAbschnitte.length"
     >
-      <div v-for="(abschnitt, j) in tour" :key="j">
+      <div v-for="(abschnitt, j) in tourAbschnitte" :key="j">
         <v-stepper-step
           :step="j + 1"
           :complete="stepCurrent > j + 1"
           v-if="stepCurrent - 1 <= j"
           >{{
-            `${abschnitt.schuelerKurz.strasseUndNummer}, ${
-              abschnitt.schuelerKurz.haltepunktOrtttt
+            `${abschnitt.haltepunktStrasseUndNummer}, ${
+              abschnitt.haltepunktOrt
             }`
           }}
           <small>{{
-            `${abschnitt.schuelerKurz.nachname}, ${abschnitt.schuelerKurz.vorname}, Hilfsmittel: ${
-              abschnitt.schuelerKurz.hilfsmittellll?abschnitt.schuelerKurz.hilfsmittellll:'-'
+            `${abschnitt.nameSchuleOderSchueler}, Hilfsmittel: ${
+              abschnitt.hilfsmittellll?abschnitt.hilfsmittellll:'-'
             }`
           }}</small>
         </v-stepper-step>
@@ -160,7 +160,7 @@ export default {
       selecteOptionsKeinEinstieg: [],
       snackbar: false,
       snackbarText: null,
-      tourProgress: [],
+      tourGesamtFortschritt: [],
       ausstiegAuswahl: []
     }
   },
@@ -168,13 +168,16 @@ export default {
     tourBeendet
   },
   computed: {
-    tour() {
+    tourAbschnitte() {
       return this.$store.getters.tourCurrentAbschnitte
     },
+    tourGesamt() {
+      return this.$store.getters.tourCurrent
+    },
     buttonTextStartStop() {
-      if (this.tour.length && this.stepCurrent === 0) {
+      if (this.tourAbschnitte.length && this.stepCurrent === 0) {
         return 'Starte Tour'
-      } else if (this.stepCurrent === this.tour.length + 1) {
+      } else if (this.stepCurrent === this.tourAbschnitte.length + 1) {
         return 'Beende Tour'
       } else {
         return null
@@ -187,11 +190,11 @@ export default {
         //Button Tour starten
         this.stepCurrent = 1
         this.$emit('start')
-        this.tourProgress = this.tour
-        this.tourProgress.forEach(element => {
+        this.tourGesamtFortschritt = this.tourGesamt
+        this.tourGesamtFortschritt.tourAbschnitte.forEach(element => {
           //temporär, falls key noch nicht existiert
-          element.ausgestiegen = false
-          element.eingestiegen = false
+          element.ausgestiegen = null
+          element.eingestiegen = null
         })
       } else {
         //Button Tour beenden
@@ -203,37 +206,37 @@ export default {
         this.snackbar = true
       }
     },
-    clickStop(nummerStop) {
+    clickStop(nummerAbschnitt) {
       this.stepStatus = 1
       this.einstiegJaNein = null
-      return nummerStop //nummerStop ist noch unused
+      return nummerAbschnitt //nummerAbschnitt ist noch unused
     },
-    auswahlEinstieg(nummerStop) {
+    auswahlEinstieg(nummerAbschnitt) {
       this.stepStatus = 0
       this.stepCurrent += 1
       this.selecteOptionsKeinEinstieg = [] //nach übergabe an die datenbank werte zurücksetzen
 
-      //tour Progress anpassen (Einstiege, Ausstiege usw.)
-      this.tourProgress[nummerStop].eingestiegen = true
-      this.tourProgress[nummerStop].ausgestiegen = false
+      //tourAbschnitte Progress anpassen (Einstiege, Ausstiege usw.)
+      this.tourGesamtFortschritt.tourAbschnitte[nummerAbschnitt].eingestiegen = new Date.now()
+      this.tourGesamtFortschritt.tourAbschnitte[nummerAbschnitt].ausgestiegen = null
 
       //snackbar
       this.snackbarText = 'Zwischenhalt gespeichert'
       this.snackbar = true
     },
-    auswahlKeinEinstieg(nummerStop) {
+    auswahlKeinEinstieg(nummerAbschnitt) {
       this.stepStatus = 3
 
-      //tour Progress anpassen (Einstiege, Ausstiege usw.)
-      this.tourProgress[nummerStop].eingestiegen = false
-      this.tourProgress[nummerStop].ausgestiegen = false
+      //tourAbschnitte Progress anpassen (Einstiege, Ausstiege usw.)
+      this.tourGesamtFortschritt.tourAbschnitte[nummerAbschnitt].eingestiegen = null
+      this.tourGesamtFortschritt.tourAbschnitte[nummerAbschnitt].ausgestiegen = null
     },
-    auswahlGrundKeinEinstieg(nummerStop) {
-      this.auswahlEinstieg(nummerStop)
+    auswahlGrundKeinEinstieg(nummerAbschnitt) {
+      this.auswahlEinstieg(nummerAbschnitt)
     },
     alleAuswaehlenAusstieg() {
       this.ausstiegAuswahl = []
-      for (let i = 0; i < this.tourProgress.length; i++){
+      for (let i = 0; i < this.tourGesamtFortschritt.length; i++){
         this.ausstiegAuswahl.push(true)
       }
     },

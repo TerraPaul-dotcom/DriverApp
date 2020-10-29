@@ -47,12 +47,12 @@
 </template>
 
 <script>
-import beispielTouren from '../Beispieldaten/tourenliste_mit_schuelern_beispiel_anonymisiert.json'
+import beispielTouren from '../Beispieldaten/tourenliste_mit_details_reduziert_beispiel_anonymisiert.json'
 
 export default {
   data() {
     return {
-      beispielTouren: beispielTouren.oTourExtListHeute,
+      beispielTouren: beispielTouren.touren,
       notifications: false,
     }
   },
@@ -66,11 +66,11 @@ export default {
     },
     tourAuswaehlen(nr) {
       let ausgewaehlteTour = this.beispielTouren[nr]
-      ausgewaehlteTour.tourAbschnitte.forEach(element => { //Da die Schülerdaten manchmal in schuelerKurz und manchmal in tourenPunktSchule stehen, kopiere falls null
+      /* ausgewaehlteTour.tourAbschnitte.forEach(element => { //Da die Schülerdaten manchmal in schuelerKurz und manchmal in tourenPunktSchule stehen, kopiere falls null
         if (element.schuelerKurz === null) {
           element.schuelerKurz = element.tourenPunktSchule
         }
-      })
+      }) */
       this.$store.dispatch('updateTourCurrent',this.beispielTouren[nr])
       this.$store.dispatch('updateTourAuswahl', false)
     }
