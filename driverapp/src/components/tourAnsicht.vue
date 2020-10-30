@@ -3,31 +3,15 @@
     <span v-if="!this.tourAbschnitte.length"
       >Keine Tour Ausgewählt, bitte Tour auswählen.</span
     >
-    <!-- Austieg bei Hinfahrt -->
-      <v-card class="mb-4" v-if="this.abschnittCurrent === this.tourAbschnitte.length && this.tourGesamt.rueckfahrtAsStringMini === 'H' ">
-        
-          <v-card-title>Ausstieg</v-card-title>
-          <v-card-subtitle>Ausgestiegene Schüler*innen auswählen</v-card-subtitle>
-           <v-spacer></v-spacer>
-
-          <v-switch
-          v-for="(ausstieg, k) in tourGesamtFortschritt"
-          :key="k"
-          :label="`${tourGesamtFortschritt[k].nachname}, ${tourGesamtFortschritt[k].vorname}`"
-          :true-value="true"
-          :false-value="false"
-          color="success"
-          v-model="ausstiegAuswahl[k]"
-          class="ml-4">
-          </v-switch>
-
-          <v-btn @click.prevent="alleAuswaehlenAusstieg()" small class="ml-4 mb-4">Alle Auswählen</v-btn>
-        
-      </v-card>
-      
-
 
     <!-- Start-Stop-Button -->
+    <small
+      v-if="
+        (abschnittCurrent === -1 && tourAbschnitte.length) ||
+          abschnittCurrent === tourAbschnitte.length
+      "
+      >Name der Tour: {{ this.tourGesamt.tourName }}</small
+    >
     <v-btn
       rounded
       block
@@ -58,70 +42,90 @@
       v-if="abschnittCurrent <= tourAbschnitte.length"
     >
       <div v-for="(abschnitt, j) in tourAbschnitte" :key="j">
+        <!-- Abschnitt Titel -->
         <v-stepper-step
           :step="j + 1"
-          :complete="abschnittCurrent > j -1 "
+          :complete="abschnittCurrent > j - 1"
           v-if="abschnittCurrent - 1 <= j"
           >{{
-            `${abschnitt.haltepunktStrasseUndNummer}, ${
-              abschnitt.haltepunktOrt
-            }`
+            `${abschnitt.haltepunktStrasseUndNummer}, ${abschnitt.haltepunktOrt}`
           }}
-          <small>{{
-            `${abschnitt.nameSchuleOderSchueler}, Hilfsmittel: ${
-              abschnitt.hilfsmittellll?abschnitt.hilfsmittellll:'-'
-            }`
-          }}</small>
+          <small>{{ `${abschnitt.nameSchuleOderSchueler}` }}</small>
+          <v-btn
+            color="primary"
+            @click.prevent="clickStop()"
+            :disabled="abschnittStatus > 0"
+            block
+            v-if="j === abschnittCurrent"
+            >Stop</v-btn
+          >
         </v-stepper-step>
 
-        <v-stepper-content :step="j ">
-          <v-card class="mx-auto" min-height="200" max-width="500"
-            ><v-btn
-              color="primary"
-              @click.prevent="clickStop()"
-              :disabled="abschnittStatus > 0"
-              block
-              >Stop</v-btn
-            >
+        <!-- Abschnitt Content -->
+        <v-stepper-content :step="j">
+          <v-card class="mx-auto" min-height="200" max-width="500">
 
-            <v-btn
-              v-if="abschnittStatus > 0"
-              block
-              color="success"
-              @click.prevent="auswahlEinstieg(j)"
+            <!-- If Schüler -->
+            <div
+              v-if="abschnitt.istEsEinSchueler === true && abschnittStatus > 0"
             >
-              Einstieg
-            </v-btn>
-            <v-btn
-              v-if="abschnittStatus > 0"
-              block
-              color="error"
-              @click.prevent="auswahlKeinEinstieg(j)"
-            >
-              Kein Einstieg
-            </v-btn>
-
-            <v-list>
-              <v-list-item-group
-                v-model="selecteOptionsKeinEinstieg"
-                color="indigo"
-                v-if="abschnittStatus === 3"
+              <span>{{ abschnitt.nameSchuleOderSchueler }}:</span>
+              <v-btn block color="success" @click.prevent="auswahlEinstieg(j)">
+                Einstieg
+              </v-btn>
+              <v-btn
+                block
+                color="error"
+                @click.prevent="auswahlKeinEinstieg(j)"
               >
-                <v-list-item v-for="(item, i) in itemsKeinEinstieg" :key="i">
-                  <v-list-item-content>
-                    <v-list-item-title
-                      v-text="item.text"
-                      @click.prevent="auswahlGrundKeinEinstieg()"
-                    ></v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list-item-group>
-            </v-list>
+                Kein Einstieg
+              </v-btn>
+
+              <v-list>
+                <v-list-item-group
+                  v-model="selecteOptionsKeinEinstieg"
+                  color="indigo"
+                  v-if="abschnittStatus === 3"
+                >
+                  <v-list-item v-for="(item, i) in itemsKeinEinstieg" :key="i">
+                    <v-list-item-content>
+                      <v-list-item-title
+                        v-text="item.text"
+                        @click.prevent="auswahlGrundKeinEinstieg()"
+                      ></v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list-item-group>
+              </v-list>
+            </div>
+
+            <!-- If Schule -->
+            <div v-if="abschnitt.istEsEineSchule === true && abschnittStatus > 0">
+              <span>{{ textEinOderAusstiegBeiSchule }}</span>
+              <v-spacer></v-spacer>
+
+              <v-switch
+                v-for="(person, k) in tourAbschnitte"
+                :key="k"
+                :label="person.nameSchuleOderSchueler"
+                :true-value="true"
+                :false-value="false"
+                color="success"
+                v-model="ausstiegEinstiegAuswahl[k]"
+                class="ml-4"
+              >
+              </v-switch>
+              <v-btn
+                @click.prevent="alleAuswaehlenAusstiegEinstieg()"
+                small
+                class="ml-4 mb-4"
+                >Alle Auswählen</v-btn
+              >
+            </div>
           </v-card>
         </v-stepper-content>
       </div>
     </v-stepper>
-
 
     <!-- Snackbar -->
     <v-snackbar v-model="snackbar" timeout="3000">
@@ -135,7 +139,7 @@
     </v-snackbar>
 
     <!-- tourBeendet-Dialog -->
-      <tourBeendet @tourReset="tourReset()"/>
+    <tourBeendet @tourReset="tourReset()" />
   </div>
 </template>
 
@@ -145,7 +149,6 @@ import tourBeendet from './tourBeendet'
 export default {
   data() {
     return {
-      e6: 1,
       abschnittCurrent: -1,
       abschnittStatus: 0, //0. Noch keine Eingabe, 1. Stop geklickt 2. Auswahl Einstieg Ja, 3. Auswahl Einstieg Nein, 4. Auswahl Grund kein Einstieg, 5. Weiterfahrt geklickt
       einstiegJaNein: null,
@@ -161,7 +164,7 @@ export default {
       snackbar: false,
       snackbarText: null,
       tourGesamtFortschritt: [],
-      ausstiegAuswahl: []
+      ausstiegEinstiegAuswahl: []
     }
   },
   components: {
@@ -176,11 +179,18 @@ export default {
     },
     buttonTextStartStop() {
       if (this.tourAbschnitte.length && this.abschnittCurrent === -1) {
-        return `Starte Tour (${this.tourGesamt.tourName})`
+        return `Starte Tour`
       } else if (this.abschnittCurrent === this.tourAbschnitte.length) {
         return 'Beende Tour'
       } else {
         return null
+      }
+    },
+    textEinOderAusstiegBeiSchule() {
+      if (this.tourGesamt.rueckfahrtAsStringMini === 'H') {
+        return 'Ausgestiegene Schüler*innen auswählen'
+      } else if (this.tourGesamt.rueckfahrtAsStringMini === 'R') {
+        return 'Eingestiegene Schüler*innen auswählen'
       }
     }
   },
@@ -191,6 +201,7 @@ export default {
         this.abschnittCurrent = 0
         this.$emit('start')
         this.tourGesamtFortschritt = this.tourGesamt
+        this.$store.dispatch('updateTourCurrentGestartet', true)
         this.tourGesamtFortschritt.tourAbschnitte.forEach(element => {
           //temporär, falls key noch nicht existiert
           element.ausgestiegen = null
@@ -200,6 +211,7 @@ export default {
         //Button Tour beenden
         this.$emit('stop')
         this.$store.dispatch('updateTourBeendet', true)
+        this.$store.dispatch('updateTourCurrentGestartet', false)
 
         //Snackbar
         this.snackbarText = 'Tour erfolgreich beendet'
@@ -217,8 +229,12 @@ export default {
       this.selecteOptionsKeinEinstieg = [] //nach übergabe an die datenbank werte zurücksetzen
 
       //tourAbschnitte Progress anpassen (Einstiege, Ausstiege usw.)
-      this.tourGesamtFortschritt.tourAbschnitte[nummerAbschnitt].eingestiegen = new Date.now()
-      this.tourGesamtFortschritt.tourAbschnitte[nummerAbschnitt].ausgestiegen = null
+      this.tourGesamtFortschritt.tourAbschnitte[
+        nummerAbschnitt
+      ].eingestiegen = new Date.now()
+      this.tourGesamtFortschritt.tourAbschnitte[
+        nummerAbschnitt
+      ].ausgestiegen = null
 
       //snackbar
       this.snackbarText = 'Zwischenhalt gespeichert'
@@ -228,16 +244,20 @@ export default {
       this.abschnittStatus = 3
 
       //tourAbschnitte Progress anpassen (Einstiege, Ausstiege usw.)
-      this.tourGesamtFortschritt.tourAbschnitte[nummerAbschnitt].eingestiegen = null
-      this.tourGesamtFortschritt.tourAbschnitte[nummerAbschnitt].ausgestiegen = null
+      this.tourGesamtFortschritt.tourAbschnitte[
+        nummerAbschnitt
+      ].eingestiegen = null
+      this.tourGesamtFortschritt.tourAbschnitte[
+        nummerAbschnitt
+      ].ausgestiegen = null
     },
     auswahlGrundKeinEinstieg(nummerAbschnitt) {
       this.auswahlEinstieg(nummerAbschnitt)
     },
-    alleAuswaehlenAusstieg() {
-      this.ausstiegAuswahl = []
-      for (let i = 0; i < this.tourGesamtFortschritt.length; i++){
-        this.ausstiegAuswahl.push(true)
+    alleAuswaehlenAusstiegEinstieg() {
+      this.ausstiegEinstiegAuswahl = []
+      for (let i = 0; i < this.tourAbschnitte.length; i++) {
+        this.ausstiegEinstiegAuswahl.push(true)
       }
     },
     tourReset() {
@@ -248,7 +268,7 @@ export default {
       this.abschnittCurrent = 0
       this.$store.dispatch('updateTourCurrent', [])
     }
-  },
+  }
 }
 </script>
 

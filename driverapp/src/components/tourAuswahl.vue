@@ -31,16 +31,20 @@
             </v-btn> -->
         </v-toolbar-items>
       </v-toolbar>
-      <v-list three-line subheader>
+      <v-list three-line subheader v-if="!this.$store.getters.tourCurrentGestartet">
         <v-subheader>Auswahl Touren</v-subheader>
         <v-list-item>
           <v-list-item-content>
             <v-list-item-title>Auswahl Tagestour</v-list-item-title>
             <v-list-item-subtitle>Wähle eine heutige Tour</v-list-item-subtitle>
-            <v-btn @click="tourAuswaehlen(0)">Tour Vormittag</v-btn>
-            <v-btn @click="tourAuswaehlen(1)">Tour Nachmittag</v-btn>
+            <v-btn @click="tourAuswaehlen(0)">Hintour Manuell verkürzt</v-btn>
+            <v-btn @click="tourAuswaehlen(1)">Hintour gesamte Länge</v-btn>
+            <v-btn @click="tourAuswaehlen(2)">Rücktour gesamte Länge</v-btn>
           </v-list-item-content>
         </v-list-item>
+      </v-list>
+      <v-list three-line subheader v-if="this.$store.getters.tourCurrentGestartet">
+        <v-subheader>Tourauswahl nicht möglich da eine Tour gestartet wurde.</v-subheader>
       </v-list>
     </v-card>
   </v-dialog>

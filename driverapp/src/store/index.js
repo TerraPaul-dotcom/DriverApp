@@ -7,7 +7,7 @@ export default new Vuex.Store({
   strict: process.env.NODE_ENV !== "production", //In strict mode, whenever Vuex state is mutated outside of mutation handlers, an error will be thrown
   state: {
     dialog: { loginLogout: false, tourAuswahl: false, tourBeendet: false }, //Status der verschiedenen Dialoge
-    tourCurrent: { tour: {}, dauer: '' } //aktuell geladene Tour
+    tourCurrent: { tour: {}, dauer: '', gestartet: false } //aktuell geladene Tour
   },
   mutations: {
     updateLoginLogout(state, value) {
@@ -24,6 +24,9 @@ export default new Vuex.Store({
     },
     updateTourCurrentDauer(state, value) {
       state.tourCurrent.dauer = value
+    },
+    updateTourCurrentGestartet(state, value) {
+      state.tourCurrent.gestartet = value
     },
   },
   actions: {
@@ -42,6 +45,9 @@ export default new Vuex.Store({
     updateTourCurrentDauer(context, value) {
       context.commit("updateTourCurrentDauer", value)
     },
+    updateTourCurrentGestartet(context, value) {
+      context.commit("updateTourCurrentGestartet", value)
+    },
   },
   getters: {
     dialogLoginLogout: state => state.dialog.loginLogout,
@@ -49,6 +55,7 @@ export default new Vuex.Store({
     dialogTourBeendet: state => state.dialog.tourBeendet,
     tourCurrent: state => state.tourCurrent.tour,
     tourCurrentAbschnitte: state => state.tourCurrent.tour.tourAbschnitte,
-    tourCurrentDauer: state => state.tourCurrent.dauer
+    tourCurrentDauer: state => state.tourCurrent.dauer,
+    tourCurrentGestartet: state => state.tourCurrent.gestartet
   }
 })
