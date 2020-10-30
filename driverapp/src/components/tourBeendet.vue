@@ -49,7 +49,6 @@ export default {
   },
   methods: {
     tourReset() {
-      this.$store.dispatch('updateTourBeendet', false)
       this.$emit('tourReset')
     }
   },
