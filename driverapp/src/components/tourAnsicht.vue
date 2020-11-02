@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <span v-if="!this.tourAbschnitte.length"
+    <span v-if="!tourAbschnitte.length"
       >Keine Tour Ausgewählt, bitte Tour auswählen.</span
     >
 
@@ -16,7 +16,7 @@
       class="d-flex flex-column mb-6"
       v-model="abschnittCurrent"
       vertical
-      v-if="abschnittCurrent <= tourAbschnitte.length && abschnittCurrent >= 0"
+      v-if="abschnittCurrent <= tourAbschnitte.length && abschnittCurrent >= 0 && tourGesamtFortschritt.tourAbschnitte.length"
     >
       <div v-for="(abschnitt, j) in tourAbschnitte" :key="j">
         <!-- Abschnitt Titel -->
@@ -265,10 +265,8 @@ export default {
       }
     },
     schuleClickOkNachAuswaehlen () {
-      if (this.abschnittCurrent + 1 === this.tourAbschnitte.length) {
           this.abschnittStatus = 0
           this.abschnittCurrent += 1
-      }  
     },
     tourReset() {
       this.$emit('reset')
@@ -279,6 +277,8 @@ export default {
       this.selecteOptionsKeinEinstieg = []
       this.$store.dispatch('updateTourCurrent', [])
       this.$store.dispatch('updateTourCurrentGestartet', false)
+      this.tourGesamtFortschritt = []
+      this.ausstiegEinstiegAuswahl = []
     }
   }
 }
