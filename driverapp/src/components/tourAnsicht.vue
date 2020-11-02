@@ -33,7 +33,7 @@
           :complete="abschnittCurrent > j"
           v-if="abschnittCurrent <= j"
           >{{
-            `${abschnitt.haltepunktStrasseUndNummer}, ${abschnitt.haltepunktOrt}`
+            `${abschnitt.haltepunktStrasseUndNummer}, ${abschnitt.haltepunktOrt} (${abschnitt.uhrzeitBeginnStrFormatiertHhMm})`
           }}
           <small>{{ `${abschnitt.nameSchuleOderSchueler}` }}</small>
           <v-btn
@@ -42,7 +42,7 @@
             :disabled="abschnittStatus > 0"
             block
             v-if="j === abschnittCurrent"
-            >Stop</v-btn
+            >{{`Stop`}} </v-btn
           >
         </v-stepper-step>
 
@@ -121,13 +121,7 @@
     </v-stepper>
 
     <!-- Start-Stop-Button -->
-    <small
-      v-if="
-        (abschnittCurrent === -1 && tourAbschnitte.length) ||
-          abschnittCurrent === tourAbschnitte.length
-      "
-      >Name der Tour: {{ this.tourGesamt.tourName }}</small
-    >
+    
     <v-btn
       rounded
       block
@@ -142,6 +136,13 @@
     >
       {{ buttonTextStartStop }}
     </v-btn>
+    <small
+      v-if="
+        (abschnittCurrent === -1 && tourAbschnitte.length) ||
+          abschnittCurrent === tourAbschnitte.length
+      "
+      >Aktuell ausgewählte Tour: "{{ this.tourGesamt.tourName }}"</small
+    >
 
     <!-- Snackbar -->
     <v-snackbar v-model="snackbar" timeout="3000">
