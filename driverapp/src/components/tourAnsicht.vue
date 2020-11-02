@@ -3,6 +3,14 @@
     <span v-if="!tourAbschnitte.length"
       >Keine Tour Ausgewählt, bitte Tour auswählen.</span
     >
+    <v-alert
+      v-model="this.$store.getters.dialogNachrichtAnFahrer"
+      color="blue-grey"
+      dense
+      dismissible
+      type="info"
+    > Aktuelle Nachricht an Fahrer*in: nach Abschluss der Tour das Auto bitte aussaugen.
+    </v-alert>
 
     <!-- Progress Bar -->
     <v-progress-linear
