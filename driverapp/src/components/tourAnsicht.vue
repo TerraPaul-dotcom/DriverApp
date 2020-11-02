@@ -208,7 +208,7 @@ export default {
         return 'Ausgestiegene Schüler*innen auswählen'
       } else if (this.tourGesamt.rueckfahrtAsStringMini === 'R') {
         return 'Eingestiegene Schüler*innen auswählen'
-      }
+      } else return ''
     }
   },
   methods: {
