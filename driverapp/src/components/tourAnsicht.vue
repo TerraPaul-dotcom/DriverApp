@@ -9,12 +9,14 @@
       dense
       dismissible
       type="info"
-    > Aktuelle Nachricht an Fahrer*in: nach Abschluss der Tour das Auto bitte aussaugen.
+    >
+      Aktuelle Nachricht an Fahrer*in: nach Abschluss der Tour das Auto bitte
+      aussaugen.
     </v-alert>
 
     <!-- Progress Bar -->
     <v-progress-linear
-      :value="((abschnittCurrent) / tourAbschnitte.length) * 100"
+      :value="(abschnittCurrent / tourAbschnitte.length) * 100"
       color="primary"
       v-if="abschnittCurrent <= tourAbschnitte.length && abschnittCurrent >= 0"
     ></v-progress-linear>
@@ -24,12 +26,17 @@
       class="d-flex flex-column mb-6"
       v-model="abschnittCurrent"
       vertical
-      v-if="abschnittCurrent <= tourAbschnitte.length && abschnittCurrent >= 0 && tourGesamtFortschritt.tourAbschnitte.length"
+      v-if="
+        abschnittCurrent <= tourAbschnitte.length &&
+          abschnittCurrent >= 0 &&
+          tourGesamtFortschritt.tourAbschnitte.length
+      "
     >
       <div v-for="(abschnitt, j) in tourAbschnitte" :key="j">
         <!-- Abschnitt Titel -->
         <v-stepper-step
-          :step="j + 1"
+          :step="j"
+          icon="message"
           :complete="abschnittCurrent > j"
           v-if="abschnittCurrent <= j"
           >{{
@@ -42,49 +49,61 @@
             :disabled="abschnittStatus > 0"
             block
             v-if="j === abschnittCurrent"
-            >{{`Stop`}} </v-btn
-          >
+            class="mt-2"
+            >{{ `Stop` }}
+          </v-btn>
         </v-stepper-step>
 
         <!-- Abschnitt Content -->
         <v-stepper-content :step="j">
-          <v-card class="mx-auto" min-height="200" max-width="500">
-            <!-- If Schüler -->
+          <!-- If Schüler -->
+          <v-card class=" px-3 pb-2" max-width="500" v-if="abschnittStatus > 0">
             <div
               v-if="abschnitt.istEsEinSchueler === true && abschnittStatus > 0"
             >
-              <span>{{ abschnitt.nameSchuleOderSchueler }}:</span>
+              <div class="text-center text-uppercase">
+                <div class="py-2">{{ abschnitt.nameSchuleOderSchueler }}:</div>
+              </div>
               <v-btn
                 block
+                class="mb-2"
                 color="success"
                 @click.prevent="schuelerAuswahlEinstieg(j)"
               >
                 Einstieg
               </v-btn>
+
               <v-btn
                 block
                 color="error"
+                elevation="1"
                 @click.prevent="schuelerAuswahlKeinEinstieg(j)"
+                class="mb-2"
               >
                 Kein Einstieg
               </v-btn>
 
-              <v-list>
-                <v-list-item-group
-                  v-model="selecteOptionsKeinEinstieg"
-                  color="indigo"
-                  v-if="abschnittStatus === 3"
-                >
-                  <v-list-item v-for="(item, i) in itemsKeinEinstieg" :key="i">
-                    <v-list-item-content>
-                      <v-list-item-title
-                        v-text="item.text"
-                        @click.prevent="schuelerAuswahlGrundKeinEinstieg()"
-                      ></v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
-                </v-list-item-group>
-              </v-list>
+              <v-card
+                class="py-2 px-1"
+                v-if="abschnittStatus === 3"
+                elevation="1"
+              >
+                <v-list>
+                  <v-list-item-group v-model="selecteOptionsKeinEinstieg">
+                    <v-list-item
+                      v-for="(item, i) in itemsKeinEinstieg"
+                      :key="i"
+                    >
+                      <v-list-item-content>
+                        <v-list-item-title
+                          v-text="item.text"
+                          @click.prevent="schuelerAuswahlGrundKeinEinstieg()"
+                        ></v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </v-list-item-group>
+                </v-list>
+              </v-card>
             </div>
 
             <!-- If Schule -->
@@ -111,7 +130,11 @@
                 class="ml-4 mb-4"
                 >Alle Auswählen</v-btn
               >
-              <v-btn @click.prevent="schuleClickOkNachAuswaehlen()" small block class="ml-4 mb-4"
+              <v-btn
+                @click.prevent="schuleClickOkNachAuswaehlen()"
+                small
+                block
+                class="ml-4 mb-4"
                 >Ok</v-btn
               >
             </div>
@@ -121,7 +144,7 @@
     </v-stepper>
 
     <!-- Start-Stop-Button -->
-    
+
     <v-btn
       rounded
       block
@@ -136,14 +159,15 @@
     >
       {{ buttonTextStartStop }}
     </v-btn>
-    <small
-      v-if="
-        (abschnittCurrent === -1 && tourAbschnitte.length) ||
-          abschnittCurrent === tourAbschnitte.length
-      "
-      >Aktuell ausgewählte Tour: "{{ this.tourGesamt.tourName }}"</small
-    >
-
+    <div class="text-center">
+      <small
+        v-if="
+          (abschnittCurrent === -1 && tourAbschnitte.length) ||
+            abschnittCurrent === tourAbschnitte.length
+        "
+        >Aktuell ausgewählte Tour: "{{ this.tourGesamt.tourName }}"</small
+      >
+    </div>
     <!-- Snackbar -->
     <v-snackbar v-model="snackbar" timeout="3000">
       {{ snackbarText }}
@@ -273,9 +297,9 @@ export default {
         this.ausstiegEinstiegAuswahl.push(true)
       }
     },
-    schuleClickOkNachAuswaehlen () {
-          this.abschnittStatus = 0
-          this.abschnittCurrent += 1
+    schuleClickOkNachAuswaehlen() {
+      this.abschnittStatus = 0
+      this.abschnittCurrent += 1
     },
     tourReset() {
       this.$emit('reset')
