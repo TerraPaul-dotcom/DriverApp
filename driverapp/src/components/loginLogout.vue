@@ -36,15 +36,6 @@
             >
           </v-list-item-content>
         </v-list-item>
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title>GPS test</v-list-item-title>
-            <v-list-item-subtitle
-              >Testen ob GPS gelesen wird</v-list-item-subtitle
-            >
-            <gps />
-          </v-list-item-content>
-        </v-list-item>
       </v-list>
       <v-divider></v-divider>
       <v-list three-line subheader>
@@ -73,7 +64,6 @@
 </template>
 
 <script>
-import gps from './gps'
 
 export default {
   data() {
@@ -91,7 +81,6 @@ export default {
     }
   },
   components: {
-    gps
   }
 }
 </script>

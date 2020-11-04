@@ -169,7 +169,7 @@
       >
     </div>
     <!-- Snackbar -->
-    <v-snackbar v-model="snackbar" timeout="3000">
+    <v-snackbar v-model="snackbar" timeout="10000">
       {{ snackbarText }}
 
       <template v-slot:action="{ attrs }">
@@ -205,7 +205,8 @@ export default {
       snackbar: false,
       snackbarText: null,
       tourGesamtFortschritt: [],
-      ausstiegEinstiegAuswahl: []
+      ausstiegEinstiegAuswahl: [],
+      geolocation: null
     }
   },
   components: {
@@ -248,16 +249,22 @@ export default {
           element.ausgestiegen = null
           element.eingestiegen = null
         })
+        this.getGpsLocation()
+
       } else {
         //Button Tour beenden
         this.$emit('stop')
         this.$store.dispatch('updateTourBeendet', true)
         this.$store.dispatch('updateTourCurrentGestartet', false)
+        this.getGpsLocation()
+
       }
     },
     abschnittClickStop(nummerAbschnitt) {
       this.abschnittStatus = 1
       this.einstiegJaNein = null
+      
+      
       return nummerAbschnitt //nummerAbschnitt ist noch unused
     },
     schuelerAuswahlEinstieg(nummerAbschnitt) {
@@ -268,14 +275,11 @@ export default {
       //tourAbschnitte Progress anpassen (Einstiege, Ausstiege usw.)
       this.tourGesamtFortschritt.tourAbschnitte[
         nummerAbschnitt
-      ].eingestiegen = new Date.now()
+      ].eingestiegen = new Date()
       this.tourGesamtFortschritt.tourAbschnitte[
         nummerAbschnitt
       ].ausgestiegen = null
 
-      //snackbar
-      this.snackbarText = 'Zwischenhalt gespeichert'
-      this.snackbar = true
     },
     schuelerAuswahlKeinEinstieg(nummerAbschnitt) {
       this.abschnittStatus = 3
@@ -312,6 +316,26 @@ export default {
       this.$store.dispatch('updateTourCurrentGestartet', false)
       this.tourGesamtFortschritt = []
       this.ausstiegEinstiegAuswahl = []
+    },
+    getGpsLocation() {
+      if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          this.geolocation = position
+          
+          //snackbar
+          this.snackbarText = `Geloggte GPS Position: ${this.geolocation.coords.latitude}; ${this.geolocation.coords.longitude}`
+          this.snackbar = true
+        },
+        function (error) {
+            alert(error.message)
+        }, {
+            enableHighAccuracy: true
+            , timeout: 5000
+        }
+      )} else {
+          alert("Geolocation is not supported by this browser.");
+        }
     }
   }
 }
