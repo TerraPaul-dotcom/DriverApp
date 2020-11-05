@@ -5,15 +5,6 @@
     hide-overlay
     transition="dialog-bottom-transition"
   >
-    <template v-slot:activator="{}">
-      <!-- <v-btn
-          color="primary"
-          dark
-          v-on="on"
-        >
-          Open Dialog
-        </v-btn> -->
-    </template>
     <v-card>
       <v-toolbar dark color="primary">
         <v-btn icon dark @click.prevent="toggleDisplayLoginLogout()">
@@ -47,8 +38,7 @@
           <v-list-item-content>
             <v-list-item-title>Notifications</v-list-item-title>
             <v-list-item-subtitle
-              >Notify me about updates to apps or games that I
-              downloaded</v-list-item-subtitle
+              >beschreibung...</v-list-item-subtitle
             >
           </v-list-item-content>
         </v-list-item>
@@ -64,7 +54,6 @@
 </template>
 
 <script>
-
 export default {
   data() {
     return {
@@ -77,11 +66,10 @@ export default {
   },
   methods: {
     toggleDisplayLoginLogout() {
-      this.$store.dispatch('updateLoginLogout', false)
+      this.$store.dispatch('dialogUpdateLoginLogout', false)
     }
   },
-  components: {
-  }
+  components: {}
 }
 </script>
 

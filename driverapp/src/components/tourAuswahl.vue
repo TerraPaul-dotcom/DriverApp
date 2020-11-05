@@ -66,7 +66,7 @@ export default {
   },
   methods: {
     toggleDisplayTourAuswahl() {
-      this.$store.dispatch('updateTourAuswahl', false)
+      this.$store.dispatch('dialogUpdateTourAuswahl', false)
     },
     tourAuswaehlen(nr) {
       /*let ausgewaehlteTour = this.beispielTouren[nr]
@@ -76,7 +76,7 @@ export default {
         }
       }) */
       this.$store.dispatch('updateTourCurrent',this.beispielTouren[nr])
-      this.$store.dispatch('updateTourAuswahl', false)
+      this.$store.dispatch('dialogUpdateTourAuswahl', false)
     }
   },
   mounted() {
