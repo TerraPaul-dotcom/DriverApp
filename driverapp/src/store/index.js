@@ -12,7 +12,51 @@ export default new Vuex.Store({
       tourBeendet: false,
       NachrichtAnFahrer: true
     }, //Status der verschiedenen Dialoge
-    tourCurrent: { tour: {}, dauer: '', gestartet: false } //gesamte Tour, dauer TODO: dauer eventuell direkt ins tour objekt schreiben, gestartet wird true sobald tour angefangen hat
+    tourCurrent: {
+      tour: {
+        tourId: null,
+        fahrzeugId: null,
+        schulIdListeTour: null,
+        schuleNameMulti: null,
+        sonderfahrtId: null,
+        tourName: null,
+        anzahl: null,
+        fahrzeugName: null,
+        fahrerId: null,
+        fahrerName: null,
+        anzahlAbschnitte: null,
+        tourAbschnitte: [
+          {
+            tourAbschnittId: null,
+            tourId: null,
+            reihenfolge: null,
+            anzahlSchueler: null,
+            anzahlAenderung: null,
+            istEsEinSchueler: null,
+            istEsEineSchule: null,
+            haltepunktStrasseUndNummer: null,
+            haltepunktPlz: null,
+            uhrzeitBeginnStrFormatiertHhMm: null,
+            idSchuleOderSchueler: null,
+            nameSchuleOderSchueler: null,
+            uhrzeitEndeStrFormatiertHhMm: null,
+            dauerStrFormatiertHhMm: null,
+            haltepunktOrt: null
+          }
+        ],
+        uhrzeitBeginnStrFormatiertHhMm: null,
+        uhrzeitEndeStrFormatiertHhMm: null,
+        dauerStrFormatiertHhMm: null,
+        laengeInKmDecimal: null,
+        laengeFormattedInKM: null,
+        begleitpersonAbholenJaNein: null,
+        mitBetriebshofKuerzel: null,
+        rueckfahrtAsStringMini: null,
+        wochentagKurzMitSpace: null
+      },
+      dauer: '',
+      gestartet: false
+    } //gesamte Tour, dauer TODO: dauer eventuell direkt ins tour objekt schreiben, gestartet wird true sobald tour angefangen hat
   },
   mutations: {
     dialogUpdateLoginLogout(state, value) {

@@ -2,8 +2,8 @@
   <div id="app">
     <!-- Hinweis falls keine Tour ausgewählt -->
     <span v-if="!tourAbschnitte.length"
-      >Keine Tour Ausgewählt, bitte Tour auswählen.</span
-    >
+      >Keine Tour Ausgewählt, bitte Tour auswählen.
+    </span>
 
     <!-- Nachricht an Fahrer*in -->
     <v-alert
@@ -29,11 +29,7 @@
       class="d-flex flex-column mb-6"
       v-model="abschnittCurrent"
       vertical
-      v-if="
-        abschnittCurrent <= tourAbschnitte.length &&
-          abschnittCurrent >= 0 &&
-          tourGesamtFortschritt.tourAbschnitte.length
-      "
+      v-if="abschnittCurrent <= tourAbschnitte.length && abschnittCurrent >= 0"
     >
       <div v-for="(abschnitt, j) in tourAbschnitte" :key="j">
         <!-- Abschnitt Titel mit Name und Adresse etc. -->
@@ -184,11 +180,14 @@
 
     <!-- tourBeendet-Dialog -->
     <tourBeendet @tourReset="tourReset()" />
+
+    <apiKommunikation />
   </div>
 </template>
 
 <script>
 import tourBeendet from './tourBeendet'
+import apiKommunikation from './apiKommunikation'
 
 export default {
   data() {
@@ -199,13 +198,16 @@ export default {
       ausgewaehlteOptionenKeinEinstieg: ['Krankheit', 'Unklar'], //Optionen falls keine Einstieg
       snackbar: false, //toggle Anzeige snackbar
       snackbarText: null,
-      tourGesamtFortschritt: [], //Kopie der aktuellen Tour. In dieses Objekt werden updates geschrieben. TODO: entscheiden ob besser direkt in store geschrieben wird.
       ausstiegEinstiegAuswahl: [], //Hilfsvariable, um mehrere schülerinnen auswählen zu können
-      geolocation: null //abfrage der geolocation
+      geolocation: null, //abfrage der geolocation
+      tourFahrerInput: {}
+      //Header: Start/Ende Date, Start/Ende GPS, Name Fahrer, TourId,
+      //Abschnitte: Stop Date, Stop GPS, Schule/Schüler, Name Schüler*innen, Einstieg pro Schüler ja/nein, Ausstieg pro Schüler ja/nein,
     }
   },
   components: {
-    tourBeendet //Popup sobald tour beendet ist
+    tourBeendet, //Popup sobald tour beendet ist
+    apiKommunikation
   },
   computed: {
     tourAbschnitte() {
@@ -238,13 +240,12 @@ export default {
         this.$store.dispatch('updateTourCurrentGestartet', true)
         this.$emit('startTimer')
         this.abschnittCurrent = 0
-        this.tourGesamtFortschritt = this.tourGesamt
-        this.tourGesamtFortschritt.tourAbschnitte.forEach(element => {
+        /* this.tourFahrerInput.tourAbschnitte.forEach(element => {
           //TODO: hier entscheiden, ob es dieses zusatz braucht oder ob man besser direkt in des store schreibt
           //temporär, falls key noch nicht existiert
           element.ausgestiegen = null
           element.eingestiegen = null
-        })
+        }) */
         this.getGpsLocation()
       } else {
         //Button Tour beenden
@@ -264,45 +265,42 @@ export default {
       this.abschnittCurrent += 1
       this.ausgewaehlteOptionenKeinEinstieg = [] //nach übergabe an die datenbank werte zurücksetzen für den nächsten Abschnit
       //tourAbschnitte Progress anpassen (Einstiege, Ausstiege usw.)
-      this.tourGesamtFortschritt.tourAbschnitte[ //TODO: hier entscheiden ob und wohin das geschrieben wird. eventuell direkt ins store tour object?
+      /* this.tourFahrerInput.tourAbschnitte[ //TODO: hier entscheiden ob und wohin das geschrieben wird. eventuell direkt ins store tour object?
         nummerAbschnitt
-      ].eingestiegen = new Date()
-      this.tourGesamtFortschritt.tourAbschnitte[
-        nummerAbschnitt
-      ].ausgestiegen = null
+      ].eingestiegen = new Date() 
+      this.tourFahrerInput.tourAbschnitte[nummerAbschnitt].ausgestiegen = null*/
+      return nummerAbschnitt
     },
     schuelerAuswahlKeinEinstieg(nummerAbschnitt) {
       this.abschnittStatus = 3
-      this.tourGesamtFortschritt.tourAbschnitte[ //TODO: hier entscheiden ob und wohin das geschrieben wird. eventuell direkt ins store tour object?
-        nummerAbschnitt
-      ].eingestiegen = null
-      this.tourGesamtFortschritt.tourAbschnitte[
-        nummerAbschnitt
-      ].ausgestiegen = null
+      this.tourFahrerInput.tourAbschnitte[nummerAbschnitt].eingestiegen = null //TODO: hier entscheiden ob und wohin das geschrieben wird. eventuell direkt ins store tour object?
+      this.tourFahrerInput.tourAbschnitte[nummerAbschnitt].ausgestiegen = null
     },
     schuelerAuswahlGrundKeinEinstieg(nummerAbschnitt) {
       this.schuelerAuswahlEinstieg(nummerAbschnitt) //TODO: vorübergehende Lösung, hier wird grund für nicht einstieg noch nirgends hingeschrieben
     },
-    schuelerAlleAuswaehlenAusstiegEinstieg() { //TODO: temporäre lösung um alle schülerinnen auszuwählen
+    schuelerAlleAuswaehlenAusstiegEinstieg() {
+      //TODO: temporäre lösung um alle schülerinnen auszuwählen
       this.ausstiegEinstiegAuswahl = []
       for (let i = 0; i < this.tourAbschnitte.length; i++) {
         this.ausstiegEinstiegAuswahl.push(true)
       }
     },
-    schuleClickOkNachAuswaehlen() { //TODO: temporäre Lösung für den Prototyp
+    schuleClickOkNachAuswaehlen() {
+      //TODO: temporäre Lösung für den Prototyp
       this.abschnittStatus = 0
       this.abschnittCurrent += 1
     },
     tourReset() {
       this.$emit('resetTimer')
       this.$store.dispatch('dialogUpdateTourBeendet', false)
-      this.$store.dispatch('updateTourCurrent', [])
+      this.$store.dispatch('updateTourCurrent', {tourAbschnitte: [null, null]})
       this.$store.dispatch('updateTourCurrentGestartet', false)
       this.abschnittStatus = 0
       this.einstiegJaNein = null
       this.abschnittCurrent = -1
       this.ausgewaehlteOptionenKeinEinstieg = []
-      this.tourGesamtFortschritt = []
+      this.tourFahrerInput = []
       this.ausstiegEinstiegAuswahl = []
     },
     getGpsLocation() {
@@ -324,7 +322,9 @@ export default {
           }
         )
       } else {
-        alert('Die Abfrage der Geokoordinaten wird von Ihrem Browser nicht unterstützt.') 
+        alert(
+          'Die Abfrage der Geokoordinaten wird von Ihrem Browser nicht unterstützt.'
+        )
       }
     }
   }
