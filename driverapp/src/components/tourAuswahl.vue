@@ -80,7 +80,7 @@ export default {
     }
   },
   mounted() {
-    this.tourAuswaehlen(0)
+    this.tourAuswaehlen(2)
   }
 }
 </script>
