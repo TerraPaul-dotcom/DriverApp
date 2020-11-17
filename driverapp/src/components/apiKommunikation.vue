@@ -6,8 +6,17 @@
 import api from '../api.js'
 
 export default {
-    props: {
-        tourFahrerInput: Object
+    methods: {
+        async submitTourenAbgeschlossen(fahrerInput) {
+            console.log(fahrerInput)
+        const res = await api.post(`/tourenAbgeschlossen`, fahrerInput)
+        if (res.status === 200) {
+            console.log('tourAbgeschlossen übertragen');
+        }
+      }
+    },
+    mounted () {
+        
     }
 
 }

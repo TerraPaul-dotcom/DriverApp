@@ -225,7 +225,7 @@
     <!-- tourBeendet-Dialog -->
     <tourBeendet @tourReset="tourReset()" />
 
-    <apiKommunikation />
+    <apiKommunikation ref="apiKommunikation" />
   </div>
 </template>
 
@@ -282,6 +282,7 @@ export default {
   },
   methods: {
     async starteBeendeTour() {
+      //Tour starten
       if (this.abschnittCurrent === -1) {
         this.$store.dispatch('updateTourCurrentGestartet', true)
         this.$emit('startTimer')
@@ -295,13 +296,14 @@ export default {
           tourAbschnitte: []
         }
       } else {
-        //Button Tour beenden
-        this.$emit('stopTimer')
-        await this.getGpsLocation() //TODO: GPS position wird nicht in fahrerinput gespeichert
-        this.tourFahrerInput.tourStop = new Date()
-        this.tourFahrerInput.tourStopGps = 'gps-position',
-        this.$store.dispatch('dialogUpdateTourBeendet', true)
-        this.$store.dispatch('updateTourCurrentGestartet', false)
+          //Tour beenden
+          this.$emit('stopTimer')
+          await this.getGpsLocation() //TODO: GPS position wird nicht in fahrerinput gespeichert
+          this.tourFahrerInput.tourStop = new Date()
+          this.tourFahrerInput.tourStopGps = 'gps-position',
+          this.$store.dispatch('dialogUpdateTourBeendet', true)
+          this.$store.dispatch('updateTourCurrentGestartet', false)
+          this.$refs.apiKommunikation.submitTourenAbgeschlossen(this.tourFahrerInput) // greife auf methode in Componente apiKommunikatin zu
       }
     },
     abschnittClickStop(nummerAbschnitt) {
