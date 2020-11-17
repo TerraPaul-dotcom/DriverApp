@@ -6,6 +6,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require("cors")
 const tourRouter = require('../routes/tour.routes')
+const tourenAbgeschlossenRouter = require('../routes/tourenAbgeschlossen.routes')
 
 
 const app = express()
@@ -39,6 +40,7 @@ const port = process.env.PORT || 3000
 
 //Routes
 app.use('/api/tour', tourRouter)
+app.use('/api/tourenAbgeschlossen', tourenAbgeschlossenRouter)
 
 
 app.listen(port, () => console.log(`Server started on port ${port}`)) 
