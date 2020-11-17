@@ -10,7 +10,7 @@ export default {
         async submitTourenAbgeschlossen(fahrerInput) {
         const res = await api.post(`/tourenAbgeschlossen`, fahrerInput)
         if (res.status === 200) {
-            
+            setTimeout(() => this.$store.dispatch('updateTourCurrentUebertragungAbgeschlossen', true), 7000)
         }
       }
     },

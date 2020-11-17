@@ -55,7 +55,8 @@ export default new Vuex.Store({
         wochentagKurzMitSpace: null
       },
       dauer: '',
-      gestartet: false
+      gestartet: false,
+      uebertragungAnDatenbankAbgeschlossen: false
     } //gesamte Tour, dauer TODO: dauer eventuell direkt ins tour objekt schreiben, gestartet wird true sobald tour angefangen hat
   },
   mutations: {
@@ -79,6 +80,9 @@ export default new Vuex.Store({
     },
     updateTourCurrentGestartet(state, value) {
       state.tourCurrent.gestartet = value
+    },
+    updateTourCurrentUebertragungAbgeschlossen(state, value) {
+      state.tourCurrent.uebertragungAnDatenbankAbgeschlossen = value
     }
   },
   actions: {
@@ -102,6 +106,9 @@ export default new Vuex.Store({
     },
     updateTourCurrentGestartet(context, value) {
       context.commit('updateTourCurrentGestartet', value)
+    },
+    updateTourCurrentUebertragungAbgeschlossen(context, value) {
+      context.commit('updateTourCurrentUebertragungAbgeschlossen', value)
     }
   },
   getters: {
@@ -112,6 +119,7 @@ export default new Vuex.Store({
     tourCurrent: state => state.tourCurrent.tour,
     tourCurrentAbschnitte: state => state.tourCurrent.tour.tourAbschnitte,
     tourCurrentDauer: state => state.tourCurrent.dauer,
-    tourCurrentGestartet: state => state.tourCurrent.gestartet
+    tourCurrentGestartet: state => state.tourCurrent.gestartet,
+    tourCurrentUebertragungAbgeschlossen: state => state.tourCurrent.uebertragungAnDatenbankAbgeschlossen
   }
 })
