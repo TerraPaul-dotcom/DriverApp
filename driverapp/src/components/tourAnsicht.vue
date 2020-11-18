@@ -296,7 +296,7 @@ export default {
           tourID: this.tourGesamt.tourId,
           fahrerId: this.tourGesamt.fahrerId,
           tourStart: new Date(),
-          tourStartGps: [position.coords.latitude, position.coords.longitude],//this.geolocation,
+          tourStartGps: position,
           tourAbschnitte: []
         }
          //TODO: GPS position wird nicht in fahrerinput gespeichert
@@ -305,7 +305,7 @@ export default {
           this.$emit('stopTimer')
           const position = await this.getGpsLocation()
           this.tourFahrerInput.tourStop = new Date()
-          this.tourFahrerInput.tourStopGps = [position.coords.latitude, position.coords.longitude]
+          this.tourFahrerInput.tourStopGps = position
           this.$store.dispatch('dialogUpdateTourBeendet', true)
           this.$refs.apiKommunikation.submitTourenAbgeschlossen(this.tourFahrerInput) // greife auf methode in Componente apiKommunikatin zu
       }
@@ -316,7 +316,7 @@ export default {
       const position = await this.getGpsLocation()
        this.abschnittFahrerInput = {
         tourAbschnittId: this.tourAbschnitte[nummerAbschnitt].tourAbschnittId,
-        abschnittGps: [position.coords.latitude, position.coords.longitude],
+        abschnittGps: position,
         abschnittStop: new Date(),
         nameSchuleOderSchueler: this.tourAbschnitte[nummerAbschnitt]
           .nameSchuleOderSchueler
@@ -421,7 +421,9 @@ export default {
               enableHighAccuracy: true,
               timeout: 5000
             } */
-            resolve, reject, { //TODO: hier error handling bauen
+            position => {
+              resolve([position.coords.latitude, position.coords.longitude])
+              }, position => {reject('Fehler bei Abruf der Geolocation' + position)}, { //TODO: hier error handling bauen
               enableHighAccuracy: true,
               timeout: 5000
             }
