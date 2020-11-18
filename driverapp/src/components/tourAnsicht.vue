@@ -5,6 +5,10 @@
       >Keine Tour Ausgewählt, bitte Tour auswählen.
     </span>
 
+    {{ tourFahrerInput }}
+    {{ abschnittFahrerInput }}
+    {{ geolocation }}
+
     <!-- Nachricht an Fahrer*in -->
     <v-alert
       v-model="this.$store.getters.dialogNachrichtAnFahrer"
@@ -124,7 +128,7 @@
                   class="mb-2"
                   color="success"
                   @click.prevent="schuelerAuswahlAusstieg(j)"
-                  >
+                >
                   Ausstieg
                 </v-btn>
               </div>
@@ -244,7 +248,7 @@ export default {
       snackbar: false, //toggle Anzeige snackbar
       snackbarText: null,
       ausstiegEinstiegAuswahl: [],
-      geolocation: null, //abfrage der geolocation
+      geolocation: null, //abfrage der geolocation TODO: Wird variable weiterhin gebraucht??
       tourFahrerInput: { tourAbschnitte: [] },
       //Header: Start/Ende Date, Start/Ende GPS, Name Fahrer, TourId,
       //Abschnitte: Stop Date, Stop GPS, Schule/Schüler, Name Schüler*innen, Einstieg pro Schüler ja/nein, Ausstieg pro Schüler ja/nein,
@@ -287,36 +291,40 @@ export default {
         this.$store.dispatch('updateTourCurrentGestartet', true)
         this.$emit('startTimer')
         this.abschnittCurrent = 0
-        await this.getGpsLocation() //TODO: GPS position wird nicht in fahrerinput gespeichert
+        const position = await this.getGpsLocation()
         this.tourFahrerInput = {
           tourID: this.tourGesamt.tourId,
           fahrerId: this.tourGesamt.fahrerId,
           tourStart: new Date(),
-          tourStartGps: this.geolocation,
+          tourStartGps: [position.coords.latitude, position.coords.longitude],//this.geolocation,
           tourAbschnitte: []
         }
+         //TODO: GPS position wird nicht in fahrerinput gespeichert
       } else {
           //Tour beenden
           this.$emit('stopTimer')
-          await this.getGpsLocation() //TODO: GPS position wird nicht in fahrerinput gespeichert
+          const position = await this.getGpsLocation()
           this.tourFahrerInput.tourStop = new Date()
-          this.tourFahrerInput.tourStopGps = 'gps-position',
+          this.tourFahrerInput.tourStopGps = [position.coords.latitude, position.coords.longitude]
           this.$store.dispatch('dialogUpdateTourBeendet', true)
           this.$refs.apiKommunikation.submitTourenAbgeschlossen(this.tourFahrerInput) // greife auf methode in Componente apiKommunikatin zu
       }
     },
-    abschnittClickStop(nummerAbschnitt) {
+   async abschnittClickStop(nummerAbschnitt) {
       this.abschnittStatus = 1
       this.einstiegJaNein = null
-      this.abschnittFahrerInput = {
+      const position = await this.getGpsLocation()
+       this.abschnittFahrerInput = {
         tourAbschnittId: this.tourAbschnitte[nummerAbschnitt].tourAbschnittId,
-        abschnittGps: 'gps-position',
+        abschnittGps: [position.coords.latitude, position.coords.longitude],
         abschnittStop: new Date(),
         nameSchuleOderSchueler: this.tourAbschnitte[nummerAbschnitt]
           .nameSchuleOderSchueler
-      } //TODO: GPS position abrufen und einfügen, achtung gefahr, dass anfangsgps genommen wird mit globaler variable, besser lokale variante um sicher zu gehen.
-      return nummerAbschnitt //nummerAbschnitt ist noch unused
+      }
+      //TODO: GPS position abrufen und einfügen, achtung gefahr, dass anfangsgps genommen wird mit globaler variable, besser lokale variante um sicher zu gehen.
+
     },
+
     schuelerAuswahlEinstieg(nummerAbschnitt) {
       this.abschnittStatus = 0
       this.abschnittCurrent += 1
@@ -374,7 +382,7 @@ export default {
         for (let i = 0; i < this.tourAbschnitte.length; i++){
          if (einstieg[this.tourAbschnitte[i].nameSchuleOderSchueler]) { //fall Name doppelt vorhanden ist, wird Zahl hinzugefügt
            einstieg[this.tourAbschnitte[i].nameSchuleOderSchueler] = this.ausstiegEinstiegAuswahl[i] ? this.ausstiegEinstiegAuswahl[i] : false
-           } else { 
+           } else {
              einstieg[this.tourAbschnitte[i].nameSchuleOderSchueler + `(${i})`] = this.ausstiegEinstiegAuswahl[i] ? this.ausstiegEinstiegAuswahl[i] : false
            }
         }
@@ -398,29 +406,34 @@ export default {
       this.tourFahrerInput = []
       this.ausstiegEinstiegAuswahl = []
     },
-    async getGpsLocation() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          position => {
-            this.geolocation = position
-
-            //snackbar
-            this.snackbarText = `Geloggte GPS Position: ${this.geolocation.coords.latitude}; ${this.geolocation.coords.longitude}`
-            this.snackbar = true
-          },
-          function(error) {
-            alert(error.message)
-          },
-          {
-            enableHighAccuracy: true,
-            timeout: 5000
-          }
-        )
-      } else {
-        alert(
-          'Die Abfrage der Geokoordinaten wird von Ihrem Browser nicht unterstützt.'
-        )
-      }
+    getGpsLocation() {
+      return new Promise (function(resolve, reject){
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+             /* position => {
+              this.geolocation = [position.coords.latitude, position.coords.longitude]
+              resolve},
+            function(error) {
+              alert(error.message)
+              reject(error.message)
+            },
+            {
+              enableHighAccuracy: true,
+              timeout: 5000
+            } */
+            resolve, reject, { //TODO: hier error handling bauen
+              enableHighAccuracy: true,
+              timeout: 5000
+            }
+          )
+        } else {
+          alert(
+            'Die Abfrage der Geokoordinaten wird von Ihrem Browser nicht unterstützt.'
+          
+          )
+          reject
+        }
+      })
     }
   }
 }
