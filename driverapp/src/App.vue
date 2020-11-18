@@ -69,6 +69,12 @@ export default {
     loginLogout,
     tourAuswahl
   },
+  beforeMount() { 
+    window.addEventListener("beforeunload", this.preventNav) //Prevent Reload. https://medium.com/js-dojo/how-to-prevent-browser-refresh-url-changes-or-route-navigation-in-vue-132e3f9f96cc
+  },
+  beforeDestroy() {
+    window.removeEventListener("beforeunload", this.preventNav);
+  },
   methods: {
     toggleDisplayLoginLogout() {
       this.$store.dispatch('dialogUpdateLoginLogout', true)
@@ -87,6 +93,11 @@ export default {
     },
     resetTimer() {
       this.elapsedTime = 0
+    },
+    preventNav(event) { //prevent reload
+      if (!this.$store.getters.tourCurrentGestartet) return
+      event.preventDefault()
+      event.returnValue = ""
     }
   },
   computed: {

@@ -302,7 +302,6 @@ export default {
           this.tourFahrerInput.tourStop = new Date()
           this.tourFahrerInput.tourStopGps = 'gps-position',
           this.$store.dispatch('dialogUpdateTourBeendet', true)
-          this.$store.dispatch('updateTourCurrentGestartet', false)
           this.$refs.apiKommunikation.submitTourenAbgeschlossen(this.tourFahrerInput) // greife auf methode in Componente apiKommunikatin zu
       }
     },

@@ -55,7 +55,7 @@ export default new Vuex.Store({
         wochentagKurzMitSpace: null
       },
       dauer: '',
-      gestartet: false,
+      gestartet: false, //Wird nach Abschluss der Tour und erfolgreicher Übertragung an die Datenbank auf false zurückgesetzt.
       uebertragungAnDatenbankAbgeschlossen: false
     } //gesamte Tour, dauer TODO: dauer eventuell direkt ins tour objekt schreiben, gestartet wird true sobald tour angefangen hat
   },
