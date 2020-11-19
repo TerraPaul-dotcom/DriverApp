@@ -2,6 +2,7 @@
   <v-app>
     <v-app-bar app color="light" light dense>
       <v-container fill-height>
+        <a href="http://localhost:3000/api/tourenAbgeschlossen/newest/" target="_blank">API</a>
         <v-spacer></v-spacer>
         <!-- Timer -->
         <span

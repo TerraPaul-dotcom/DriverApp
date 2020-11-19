@@ -5,9 +5,7 @@
       >Keine Tour Ausgewählt, bitte Tour auswählen.
     </span>
 
-    {{ tourFahrerInput }}
     {{ abschnittFahrerInput }}
-    {{ geolocation }}
 
     <!-- Nachricht an Fahrer*in -->
     <v-alert
@@ -104,7 +102,7 @@
                       >
                         <v-list-item-content>
                           <v-list-item-title
-                            v-text="item"
+                            v-text="item.beschriftung"
                             @click.prevent="
                               ausgewaehlteOptionenKeinEinstieg = i
                               schuelerAuswahlGrundKeinEinstieg()
@@ -219,7 +217,7 @@
     <v-snackbar v-model="snackbar" timeout="10000">
       {{ snackbarText }}
 
-      <template v-slot:action="{ attrs }">
+      <template v-slot:action="{attrs}">
         <v-btn color="pink" text v-bind="attrs" @click="snackbar = false">
           Close
         </v-btn>
@@ -243,13 +241,23 @@ export default {
       abschnittCurrent: -1, //-1. Tour noch nicht gestartet, 0. erster Abschnitt, 1. zweiter Abschnitt ...usw
       abschnittStatus: 0, //Status pro Abschnitt. 0. Noch keine Eingabe, 1. Stop geklickt 2. Auswahl Einstieg Ja, 3. Auswahl Einstieg Nein, 4. Auswahl Grund kein Einstieg, 5. Weiterfahrt geklickt
       einstiegJaNein: null, //Auswahl ob Schüler*in zugestiegen ist
-      optionenKeinEinstieg: ['Krankheit', 'Unklar'], //Optionen falls keine Einstieg
+      optionenKeinEinstieg: [
+        {beschriftung: 'DT', id: 97},
+        {beschriftung: 'Krankheit', id: 90},
+        {beschriftung: 'Nicht gefahren', id: 98},
+        {beschriftung: 'Schüleraustausch', id: 93},
+        {beschriftung: 'Sonstiger', id: 91},
+        {beschriftung: 'Umzug', id: 92},
+        {beschriftung: 'Urlaub', id: 94},
+        {beschriftung: 'xxxx', id: 95},
+        {beschriftung: 'yyyyy', id: 96}
+      ], //Optionen falls keine Einstieg
       ausgewaehlteOptionenKeinEinstieg: null,
       snackbar: false, //toggle Anzeige snackbar
       snackbarText: null,
       ausstiegEinstiegAuswahl: [],
       geolocation: null, //abfrage der geolocation TODO: Wird variable weiterhin gebraucht??
-      tourFahrerInput: { tourAbschnitte: [] },
+      tourFahrerInput: {tourAbschnitte: []},
       //Header: Start/Ende Date, Start/Ende GPS, Name Fahrer, TourId,
       //Abschnitte: Stop Date, Stop GPS, Schule/Schüler, Name Schüler*innen, Einstieg pro Schüler ja/nein, Ausstieg pro Schüler ja/nein,
       abschnittFahrerInput: {}
@@ -292,44 +300,63 @@ export default {
         this.$emit('startTimer')
         this.abschnittCurrent = 0
         const position = await this.getGpsLocation()
+        const date = new Date().toISOString().replace(/.\d+Z$/g, 'Z')
         this.tourFahrerInput = {
           tourID: this.tourGesamt.tourId,
+          fahrzeugId: this.tourGesamt.fahrzeugId,
+          sonderfahrtId: this.tourGesamt.sonderfahrtId,
           fahrerId: this.tourGesamt.fahrerId,
-          tourStart: new Date(),
-          tourStartGps: position,
+          mitBetriebshofKuerzel: this.tourGesamt.mitBetriebshofKuerzel,
+          begleitpersonAbholenJaNein: this.tourGesamt
+            .begleitpersonAbholenJaNein,
+          tourStart: date,
+          tourStartGpsX: position[0],
+          tourStartGpsY: position[1],
           tourAbschnitte: []
         }
-         //TODO: GPS position wird nicht in fahrerinput gespeichert
+        //TODO: GPS position wird nicht in fahrerinput gespeichert
       } else {
-          //Tour beenden
-          this.$emit('stopTimer')
-          const position = await this.getGpsLocation()
-          this.tourFahrerInput.tourStop = new Date()
-          this.tourFahrerInput.tourStopGps = position
-          this.$store.dispatch('dialogUpdateTourBeendet', true)
-          this.$refs.apiKommunikation.submitTourenAbgeschlossen(this.tourFahrerInput) // greife auf methode in Componente apiKommunikatin zu
+        //Tour beenden
+        this.$emit('stopTimer')
+        const position = await this.getGpsLocation()
+        this.tourFahrerInput.tourStop = new Date()
+          .toISOString()
+          .replace(/.\d+Z$/g, 'Z')
+        this.tourFahrerInput.fahrerId = this.tourGesamt.fahrerId
+        this.tourFahrerInput.tourStopGpsX = position[0]
+        this.tourFahrerInput.tourStopGpsY = position[1]
+        this.$store.dispatch('dialogUpdateTourBeendet', true)
+        /* const tourFahrerInputJson = JSON.stringify(this.tourFahrerInput)
+        console.log(tourFahrerInputJson) */
+        this.$refs.apiKommunikation.submitTourenAbgeschlossen(
+          this.tourFahrerInput
+        ) // greife auf methode in Componente apiKommunikation zu
       }
     },
-   async abschnittClickStop(nummerAbschnitt) {
+    async abschnittClickStop(nummerAbschnitt) {
       this.abschnittStatus = 1
       this.einstiegJaNein = null
       const position = await this.getGpsLocation()
-       this.abschnittFahrerInput = {
+      const date = new Date().toISOString().replace(/.\d+Z$/g, 'Z')
+      this.abschnittFahrerInput = {
         tourAbschnittId: this.tourAbschnitte[nummerAbschnitt].tourAbschnittId,
-        abschnittGps: position,
-        abschnittStop: new Date(),
-        nameSchuleOderSchueler: this.tourAbschnitte[nummerAbschnitt]
-          .nameSchuleOderSchueler
+        tourId: this.tourAbschnitte[nummerAbschnitt].tourId,
+        fahrzeugId: this.tourAbschnitte[nummerAbschnitt].fahrzeugId,
+        fahrerId: this.tourAbschnitte[nummerAbschnitt].fahrerId,
+        abschnittGpsX: position[0],
+        abschnittGpsY: position[1],
+        abschnittStop: date,
+        idSchuleOderSchueler: this.tourAbschnitte[nummerAbschnitt]
+          .idSchuleOderSchueler
       }
       //TODO: GPS position abrufen und einfügen, achtung gefahr, dass anfangsgps genommen wird mit globaler variable, besser lokale variante um sicher zu gehen.
-
     },
 
     schuelerAuswahlEinstieg(nummerAbschnitt) {
       this.abschnittStatus = 0
       this.abschnittCurrent += 1
       this.abschnittFahrerInput.einstieg = {
-        [this.tourAbschnitte[nummerAbschnitt].nameSchuleOderSchueler]: true
+        [this.tourAbschnitte[nummerAbschnitt].idSchuleOderSchueler]: true
       }
       this.abschnittFahrerInput.auswahlGrundKeinEinstieg = null
       this.tourFahrerInput.tourAbschnitte.push(this.abschnittFahrerInput)
@@ -339,7 +366,7 @@ export default {
       this.abschnittStatus = 0
       this.abschnittCurrent += 1
       this.abschnittFahrerInput.ausstieg = {
-        [this.tourAbschnitte[nummerAbschnitt].nameSchuleOderSchueler]: true
+        [this.tourAbschnitte[nummerAbschnitt].idSchuleOderSchueler]: true
       }
       this.tourFahrerInput.tourAbschnitte.push(this.abschnittFahrerInput)
       return nummerAbschnitt
@@ -347,13 +374,13 @@ export default {
     schuelerAuswahlKeinEinstieg(nummerAbschnitt) {
       this.abschnittStatus = 3
       this.abschnittFahrerInput.einstieg = {
-        [this.tourAbschnitte[nummerAbschnitt].nameSchuleOderSchueler]: false
+        [this.tourAbschnitte[nummerAbschnitt].idSchuleOderSchueler]: false
       }
     },
     schuelerAuswahlGrundKeinEinstieg(nummerAbschnitt) {
       this.abschnittFahrerInput.auswahlGrundKeinEinstieg = this.optionenKeinEinstieg[
         this.ausgewaehlteOptionenKeinEinstieg
-      ]
+      ].id
       this.tourFahrerInput.tourAbschnitte.push(this.abschnittFahrerInput)
       this.ausgewaehlteOptionenKeinEinstieg = null
       this.abschnittStatus = 0
@@ -368,10 +395,14 @@ export default {
     },
     schuleClickOkNachAuswaehlen() {
       //if Hintour
-      if ( this.tourGesamt.rueckfahrtAsStringMini === 'H') {
+      if (this.tourGesamt.rueckfahrtAsStringMini === 'H') {
         let ausstieg = {}
         for (let i = 0; i < this.tourFahrerInput.tourAbschnitte.length; i++) {
-          ausstieg[this.tourFahrerInput.tourAbschnitte[i].nameSchuleOderSchueler] = this.ausstiegEinstiegAuswahl[i] ? this.ausstiegEinstiegAuswahl[i] : false
+          ausstieg[
+            this.tourFahrerInput.tourAbschnitte[i].idSchuleOderSchueler
+          ] = this.ausstiegEinstiegAuswahl[i]
+            ? this.ausstiegEinstiegAuswahl[i]
+            : false
         }
         this.abschnittFahrerInput.ausstieg = ausstieg
         this.tourFahrerInput.tourAbschnitte.push(this.abschnittFahrerInput)
@@ -379,16 +410,13 @@ export default {
       //if Rücktour
       if (this.tourGesamt.rueckfahrtAsStringMini === 'R') {
         let einstieg = {}
-        for (let i = 0; i < this.tourAbschnitte.length; i++){
-         if (einstieg[this.tourAbschnitte[i].nameSchuleOderSchueler]) { //fall Name doppelt vorhanden ist, wird Zahl hinzugefügt
-           einstieg[this.tourAbschnitte[i].nameSchuleOderSchueler] = this.ausstiegEinstiegAuswahl[i] ? this.ausstiegEinstiegAuswahl[i] : false
-           } else {
-             einstieg[this.tourAbschnitte[i].nameSchuleOderSchueler + `(${i})`] = this.ausstiegEinstiegAuswahl[i] ? this.ausstiegEinstiegAuswahl[i] : false
-           }
+        for (let i = 0; i < this.tourAbschnitte.length; i++) {
+          einstieg[
+            this.tourAbschnitte[i].idSchuleOderSchueler
+          ] = this.ausstiegEinstiegAuswahl[i]
         }
         this.abschnittFahrerInput.einstieg = einstieg
         this.tourFahrerInput.tourAbschnitte.push(this.abschnittFahrerInput)
-
       }
       this.abschnittStatus = 0
       this.abschnittCurrent += 1
@@ -407,10 +435,10 @@ export default {
       this.ausstiegEinstiegAuswahl = []
     },
     getGpsLocation() {
-      return new Promise (function(resolve, reject){
+      return new Promise(function(resolve, reject) {
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(
-             /* position => {
+            /* position => {
               this.geolocation = [position.coords.latitude, position.coords.longitude]
               resolve},
             function(error) {
@@ -423,7 +451,12 @@ export default {
             } */
             position => {
               resolve([position.coords.latitude, position.coords.longitude])
-              }, position => {reject('Fehler bei Abruf der Geolocation' + position)}, { //TODO: hier error handling bauen
+            },
+            position => {
+              reject('Fehler bei Abruf der Geolocation' + position)
+            },
+            {
+              //TODO: hier error handling bauen
               enableHighAccuracy: true,
               timeout: 5000
             }
@@ -431,7 +464,6 @@ export default {
         } else {
           alert(
             'Die Abfrage der Geokoordinaten wird von Ihrem Browser nicht unterstützt.'
-          
           )
           reject
         }
