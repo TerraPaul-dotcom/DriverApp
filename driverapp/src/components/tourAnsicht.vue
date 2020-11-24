@@ -28,7 +28,7 @@
       class="d-flex flex-column mb-6"
       v-model="abschnittCurrent"
       vertical
-      v-if="abschnittCurrent <= tourAbschnitte.length && abschnittCurrent >= 0"
+      v-if="abschnittCurrent < tourAbschnitte.length && abschnittCurrent >= 0"
     >
       <div v-for="(abschnitt, j) in tourAbschnitte" :key="j">
         <!-- Abschnitt Titel mit Name und Adresse etc. -->
@@ -188,6 +188,7 @@
 
     <v-btn
       rounded
+      :disabled="this.tourGesamt.tourName === '' || this.tourGesamt.tourName === null || this.tourGesamt.tourName === undefinded  "
       block
       color="primary"
       elevation="2"
@@ -445,10 +446,11 @@ export default {
         tourAbschnitte: [null, null]
       })
       this.$store.dispatch('updateTourCurrentGestartet', false)
+      this.$store.dispatch('updateTourCurrentUebertragungAbgeschlossen', false)
       this.abschnittStatus = 0
       this.einstiegJaNein = null
       this.abschnittCurrent = -1
-      this.tourFahrerInput = []
+      this.tourFahrerInput = {tourAbschnitte: []}
       this.ausstiegEinstiegAuswahl = []
     },
     getGpsLocation() {
