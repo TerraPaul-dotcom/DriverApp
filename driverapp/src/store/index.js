@@ -10,7 +10,7 @@ export default new Vuex.Store({
       loginLogout: false,
       tourAuswahl: false,
       tourBeendet: false,
-      NachrichtAnFahrer: true
+      NachrichtAnFahrer: true //NOTE: NachrichtAnFahrer wird momentan nicht verwendet
     }, //Status der verschiedenen Dialoge
     tourCurrent: {
       tour: {

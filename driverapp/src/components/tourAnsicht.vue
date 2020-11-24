@@ -5,18 +5,15 @@
       >Keine Tour Ausgewählt, bitte Tour auswählen.
     </span>
 
-    {{ abschnittFahrerInput }}
-
     <!-- Nachricht an Fahrer*in -->
     <v-alert
-      v-model="this.$store.getters.dialogNachrichtAnFahrer"
+      v-model="dialogNachrichtAnFahrer"
       color="blue-grey"
       dense
       dismissible
       type="info"
     >
-      Aktuelle Nachricht an Fahrer*in: Schüler Karl Weber ist krank und muss
-      nicht abgeholt werden.
+      <small> Aktuelle Nachricht an Fahrer*in</small>
     </v-alert>
 
     <!-- Progress Bar -->
@@ -260,7 +257,8 @@ export default {
       tourFahrerInput: {tourAbschnitte: []},
       //Header: Start/Ende Date, Start/Ende GPS, Name Fahrer, TourId,
       //Abschnitte: Stop Date, Stop GPS, Schule/Schüler, Name Schüler*innen, Einstieg pro Schüler ja/nein, Ausstieg pro Schüler ja/nein,
-      abschnittFahrerInput: {}
+      abschnittFahrerInput: {},
+      dialogNachrichtAnFahrer: true
     }
   },
   components: {
@@ -299,7 +297,6 @@ export default {
         this.$store.dispatch('updateTourCurrentGestartet', true)
         this.$emit('startTimer')
         this.abschnittCurrent = 0
-        const position = await this.getGpsLocation()
         const date = new Date().toISOString().replace(/.\d+Z$/g, 'Z')
         this.tourFahrerInput = {
           tourID: this.tourGesamt.tourId,
@@ -310,45 +307,65 @@ export default {
           begleitpersonAbholenJaNein: this.tourGesamt
             .begleitpersonAbholenJaNein,
           tourStart: date,
-          tourStartGpsX: position[0],
-          tourStartGpsY: position[1],
-          tourAbschnitte: []
+          tourAbschnitte: [],
+          tourStartGpsX: '',
+          tourStartGpsY: '',
+          tourStopGpsX: '',
+          tourStopGpsY: ''
         }
-        //TODO: GPS position wird nicht in fahrerinput gespeichert
+        try {
+          const position = await this.getGpsLocation()
+          this.tourFahrerInput.tourStartGpsX = position[0]
+          this.tourFahrerInput.tourStartGpsY = position[1]
+        } catch (e) {
+          this.tourFahrerInput.tourStartGpsX = e
+          this.tourFahrerInput.tourStartGpsY = e
+        }
       } else {
         //Tour beenden
         this.$emit('stopTimer')
-        const position = await this.getGpsLocation()
         this.tourFahrerInput.tourStop = new Date()
           .toISOString()
           .replace(/.\d+Z$/g, 'Z')
         this.tourFahrerInput.fahrerId = this.tourGesamt.fahrerId
-        this.tourFahrerInput.tourStopGpsX = position[0]
-        this.tourFahrerInput.tourStopGpsY = position[1]
         this.$store.dispatch('dialogUpdateTourBeendet', true)
-        /* const tourFahrerInputJson = JSON.stringify(this.tourFahrerInput)
-        console.log(tourFahrerInputJson) */
-        this.$refs.apiKommunikation.submitTourenAbgeschlossen(
-          this.tourFahrerInput
-        ) // greife auf methode in Componente apiKommunikation zu
+        try {
+          const position = await this.getGpsLocation()
+          this.tourFahrerInput.tourStopGpsY = position[0]
+          this.tourFahrerInput.tourStopGpsX = position[1]
+        } catch (e) {
+          this.tourFahrerInput.tourStopGpsY = e
+          this.tourFahrerInput.tourStopGpsX = e
+        } finally {
+          this.$refs.apiKommunikation.submitTourenAbgeschlossen(
+            this.tourFahrerInput
+          ) // greife auf methode in Componente apiKommunikation zu
+        }
       }
     },
     async abschnittClickStop(nummerAbschnitt) {
       this.abschnittStatus = 1
       this.einstiegJaNein = null
-      const position = await this.getGpsLocation()
-      const date = new Date().toISOString().replace(/.\d+Z$/g, 'Z')
       this.abschnittFahrerInput = {
         tourAbschnittId: this.tourAbschnitte[nummerAbschnitt].tourAbschnittId,
         tourId: this.tourAbschnitte[nummerAbschnitt].tourId,
         fahrzeugId: this.tourAbschnitte[nummerAbschnitt].fahrzeugId,
         fahrerId: this.tourAbschnitte[nummerAbschnitt].fahrerId,
-        abschnittGpsX: position[0],
-        abschnittGpsY: position[1],
         abschnittStop: date,
         idSchuleOderSchueler: this.tourAbschnitte[nummerAbschnitt]
-          .idSchuleOderSchueler
+          .idSchuleOderSchueler,
+        abschnittGpsX: '',
+        abschnittGpsY: ''
       }
+      try {
+        const position = await this.getGpsLocation()
+        this.abschnittFahrerInput.abschnittGpsX = position[0]
+        this.abschnittFahrerInput.abschnittGpsY = position[1]
+      } catch (e) {
+        this.abschnittFahrerInput.abschnittGpsX = e
+        this.abschnittFahrerInput.abschnittGpsY = e
+      }
+      const date = new Date().toISOString().replace(/.\d+Z$/g, 'Z')
       //TODO: GPS position abrufen und einfügen, achtung gefahr, dass anfangsgps genommen wird mit globaler variable, besser lokale variante um sicher zu gehen.
     },
 
@@ -452,8 +469,8 @@ export default {
             position => {
               resolve([position.coords.latitude, position.coords.longitude])
             },
-            position => {
-              reject('Fehler bei Abruf der Geolocation' + position)
+            () => {
+              reject('Fehler bei Abruf der Geolocation')
             },
             {
               //TODO: hier error handling bauen
