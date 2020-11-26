@@ -59,7 +59,7 @@
           "haltepunktPlz": "88525",
           "uhrzeitBeginnStrFormatiertHhMm": "08:05",
           "idSchuleOderSchueler": 23,
-          "nameSchuleOderSchueler": "Nachname, Vorname",
+          "nameSchuleOderSchueler": "Schule",
           "uhrzeitEndeStrFormatiertHhMm": "08:05",
           "dauerStrFormatiertHhMm": "00:00",
           "haltepunktOrt": "Dürmentingen"
@@ -219,7 +219,7 @@
           "haltepunktPlz": "88525",
           "uhrzeitBeginnStrFormatiertHhMm": "08:05",
           "idSchuleOderSchueler": 23,
-          "nameSchuleOderSchueler": "Nachname, Vorname",
+          "nameSchuleOderSchueler": "Schule",
           "uhrzeitEndeStrFormatiertHhMm": "08:05",
           "dauerStrFormatiertHhMm": "00:00",
           "haltepunktOrt": "Dürmentingen"
@@ -260,7 +260,7 @@
           "haltepunktPlz": "88525",
           "uhrzeitBeginnStrFormatiertHhMm": "16:40",
           "idSchuleOderSchueler": 23,
-          "nameSchuleOderSchueler": "Nachname, Vorname",
+          "nameSchuleOderSchueler": "Schule",
           "uhrzeitEndeStrFormatiertHhMm": "16:46",
           "dauerStrFormatiertHhMm": "00:06",
           "haltepunktOrt": "Dürmentingen"
@@ -277,7 +277,7 @@
           "haltepunktPlz": null,
           "uhrzeitBeginnStrFormatiertHhMm": "16:46",
           "idSchuleOderSchueler": 542,
-          "nameSchuleOderSchueler": "Nachname, Vorname",
+          "nameSchuleOderSchueler": "Nachname 2, Vorname",
           "uhrzeitEndeStrFormatiertHhMm": "17:22",
           "dauerStrFormatiertHhMm": "00:34",
           "haltepunktOrt": "Riedlingen"
@@ -294,7 +294,7 @@
           "haltepunktPlz": "89604",
           "uhrzeitBeginnStrFormatiertHhMm": "17:22",
           "idSchuleOderSchueler": 1163,
-          "nameSchuleOderSchueler": "Nachname, Vorname",
+          "nameSchuleOderSchueler": "Nachname 3, Vorname",
           "uhrzeitEndeStrFormatiertHhMm": "17:25",
           "dauerStrFormatiertHhMm": "00:01",
           "haltepunktOrt": "Allmendingen, Württemberg"
@@ -311,7 +311,7 @@
           "haltepunktPlz": "89604",
           "uhrzeitBeginnStrFormatiertHhMm": "17:25",
           "idSchuleOderSchueler": 726,
-          "nameSchuleOderSchueler": "Nachname, Vorname",
+          "nameSchuleOderSchueler": "Nachname 4, Vorname",
           "uhrzeitEndeStrFormatiertHhMm": "17:34",
           "dauerStrFormatiertHhMm": "00:07",
           "haltepunktOrt": "Allmendingen"
@@ -328,7 +328,7 @@
           "haltepunktPlz": "89160",
           "uhrzeitBeginnStrFormatiertHhMm": "17:34",
           "idSchuleOderSchueler": 727,
-          "nameSchuleOderSchueler": "Nachname, Vorname",
+          "nameSchuleOderSchueler": "Nachname 5, Vorname",
           "uhrzeitEndeStrFormatiertHhMm": "17:38",
           "dauerStrFormatiertHhMm": "00:01",
           "haltepunktOrt": "Schelklingen"
@@ -345,7 +345,7 @@
           "haltepunktPlz": "89601",
           "uhrzeitBeginnStrFormatiertHhMm": "17:38",
           "idSchuleOderSchueler": 1171,
-          "nameSchuleOderSchueler": "Nachname, Vorname",
+          "nameSchuleOderSchueler": "Nachname 6, Vorname",
           "uhrzeitEndeStrFormatiertHhMm": "17:48",
           "dauerStrFormatiertHhMm": "00:07",
           "haltepunktOrt": "Schelklingen"
@@ -362,7 +362,7 @@
           "haltepunktPlz": "89143",
           "uhrzeitBeginnStrFormatiertHhMm": "17:48",
           "idSchuleOderSchueler": 1169,
-          "nameSchuleOderSchueler": "Nachname, Vorname",
+          "nameSchuleOderSchueler": "Nachname 7, Vorname",
           "uhrzeitEndeStrFormatiertHhMm": "17:48",
           "dauerStrFormatiertHhMm": "00:00",
           "haltepunktOrt": "Blaubeuren"
