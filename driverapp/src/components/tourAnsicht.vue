@@ -34,9 +34,10 @@
         <!-- Abschnitt Titel mit Name und Adresse etc. -->
         <v-stepper-step
           :step="j"
-          :complete="abschnittCurrent > j || schuelerNichtEingestiegen[j]"
-          complete-icon="mdi-cancel"
+          :complete="abschnittCurrent > j"
+          :rules="[() => !schuelerNichtEingestiegen[j]]"
           v-if="abschnittCurrent <= j"
+          error-icon="$info"
           >
           <small v-if="schuelerNichtEingestiegen[j]">Stopp entfällt</small>
           {{
