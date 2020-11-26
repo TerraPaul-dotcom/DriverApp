@@ -35,11 +35,11 @@
         <v-stepper-step
           :step="j"
           :complete="abschnittCurrent > j"
-          :rules="[() => !schuelerNichtEingestiegen[j]]"
+          :rules="[() => !schuelerNichtEingestiegen[j] || tourGesamt.rueckfahrtAsStringMini === 'H']"
           v-if="abschnittCurrent <= j"
           error-icon="$info"
           >
-          <small v-if="schuelerNichtEingestiegen[j]">Stopp entfällt</small>
+          <small v-if="schuelerNichtEingestiegen[j] && tourGesamt.rueckfahrtAsStringMini === 'R'">Stopp entfällt</small>
           {{
             `${abschnitt.haltepunktStrasseUndNummer}, ${abschnitt.haltepunktOrt} (${abschnitt.uhrzeitBeginnStrFormatiertHhMm})`
           }}
@@ -55,7 +55,7 @@
             >{{ `Stop` }}
           </v-btn>
           <!-- if Schüler*in nicht aussteigt bei Rücktour weil er/sie nicht eingestiegen ist -->
-          <div v-if="j === abschnittCurrent && schuelerNichtEingestiegen[j]">
+          <div v-if="j === abschnittCurrent && schuelerNichtEingestiegen[j] && tourGesamt.rueckfahrtAsStringMini === 'R'">
             <div class="text-center">
               <div class="py-2">Nicht eingestiegen</div>
             </div>
