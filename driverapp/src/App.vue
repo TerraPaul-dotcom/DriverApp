@@ -16,7 +16,7 @@
 
     <v-main>
       <v-container>
-        <loginLogout />
+        <benutzerKonto />
         <tourAuswahl />
         <tourAnsicht
           @startTimer="startTimer"
@@ -52,7 +52,7 @@
 
 <script>
 import tourAnsicht from './components/tourAnsicht'
-import loginLogout from './components/tourAnsichtLoginLogout'
+import benutzerKonto from './components/benutzerKonto'
 import tourAuswahl from './components/tourAuswahl'
 
 export default {
@@ -67,7 +67,7 @@ export default {
   },
   components: {
     tourAnsicht,
-    loginLogout,
+    benutzerKonto,
     tourAuswahl
   },
   beforeMount() { 
