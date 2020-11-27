@@ -52,7 +52,7 @@
 
 <script>
 import tourAnsicht from './components/tourAnsicht'
-import loginLogout from './components/loginLogout'
+import loginLogout from './components/tourAnsichtLoginLogout'
 import tourAuswahl from './components/tourAuswahl'
 
 export default {

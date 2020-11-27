@@ -249,13 +249,13 @@
     <!-- tourBeendet-Dialog -->
     <tourBeendet @tourReset="tourReset()" />
 
-    <apiKommunikation ref="apiKommunikation" />
+    <apiSendeAbgeschlosseneTour ref="apiSendeAbgeschlosseneTour" />
   </div>
 </template>
 
 <script>
-import tourBeendet from './tourBeendet'
-import apiKommunikation from './apiKommunikation'
+import tourBeendet from './tourAnsichtTourBeendet'
+import apiSendeAbgeschlosseneTour from './tourAnsichtApiSendeAbgeschlosseneTour'
 
 export default {
   data() {
@@ -289,7 +289,7 @@ export default {
   },
   components: {
     tourBeendet, //Popup sobald tour beendet ist
-    apiKommunikation
+    apiSendeAbgeschlosseneTour
   },
   computed: {
     tourAbschnitte() {
@@ -363,9 +363,9 @@ export default {
           this.tourFahrerInput.tourStopGpsY = e
           this.tourFahrerInput.tourStopGpsX = e
         } finally {
-          this.$refs.apiKommunikation.submitTourenAbgeschlossen(
+          this.$refs.apiSendeAbgeschlosseneTour.submitTourenAbgeschlossen(
             this.tourFahrerInput
-          ) // greife auf methode in Componente apiKommunikation zu
+          ) // greife auf methode in Componente apiSendeAbgeschlosseneTour zu
         }
       }
     },
