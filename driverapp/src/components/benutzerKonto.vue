@@ -5,6 +5,7 @@
     hide-overlay
     transition="dialog-bottom-transition"
   >
+  
     <v-card>
       <v-toolbar dark color="primary">
         <v-btn icon dark @click.prevent="toggleDisplayLoginLogout()">

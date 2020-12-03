@@ -1,5 +1,8 @@
 <template>
   <div id="app">
+    <!-- login falls nicht eingeloggt -->
+    <login v-if="false"></login>
+
     <!-- Hinweis falls keine Tour ausgewählt -->
     <span v-if="!tourAbschnitte.length"
       >Keine Tour Ausgewählt, bitte Tour auswählen.
@@ -35,11 +38,21 @@
         <v-stepper-step
           :step="j"
           :complete="abschnittCurrent > j"
-          :rules="[() => !schuelerNichtEingestiegen[j] || tourGesamt.rueckfahrtAsStringMini === 'H']"
+          :rules="[
+            () =>
+              !schuelerNichtEingestiegen[j] ||
+              tourGesamt.rueckfahrtAsStringMini === 'H'
+          ]"
           v-if="abschnittCurrent <= j"
           error-icon="$info"
+        >
+          <small
+            v-if="
+              schuelerNichtEingestiegen[j] &&
+                tourGesamt.rueckfahrtAsStringMini === 'R'
+            "
+            >Stopp entfällt</small
           >
-          <small v-if="schuelerNichtEingestiegen[j] && tourGesamt.rueckfahrtAsStringMini === 'R'">Stopp entfällt</small>
           {{
             `${abschnitt.haltepunktStrasseUndNummer}, ${abschnitt.haltepunktOrt} (${abschnitt.uhrzeitBeginnStrFormatiertHhMm})`
           }}
@@ -55,7 +68,13 @@
             >{{ `Stop` }}
           </v-btn>
           <!-- if Schüler*in nicht aussteigt bei Rücktour weil er/sie nicht eingestiegen ist -->
-          <div v-if="j === abschnittCurrent && schuelerNichtEingestiegen[j] && tourGesamt.rueckfahrtAsStringMini === 'R'">
+          <div
+            v-if="
+              j === abschnittCurrent &&
+                schuelerNichtEingestiegen[j] &&
+                tourGesamt.rueckfahrtAsStringMini === 'R'
+            "
+          >
             <div class="text-center">
               <div class="py-2">Nicht eingestiegen</div>
             </div>
@@ -159,13 +178,14 @@
                 <v-switch
                   v-for="(person, k) in tourFahrerInput.tourAbschnitte"
                   :key="k"
-                  :label="String(person.idSchuleOderSchueler)"
+                  :label="String(person.nameSchuleOderSchueler)"
                   :true-value="true"
                   :false-value="false"
                   color="success"
                   v-model="ausstiegEinstiegAuswahl[k]"
                   class="ml-4"
                   :disabled="schuelerNichtEingestiegen[k]"
+                  v-show="person.idSchule === tourAbschnitte[abschnittCurrent].idSchule"
                 >
                 </v-switch>
               </div>
@@ -182,6 +202,7 @@
                   v-model="ausstiegEinstiegAuswahl[k]"
                   class="ml-4"
                   :disabled="schuelerNichtEingestiegen[k]"
+                  v-show="person.idSchule === tourAbschnitte[abschnittCurrent].idSchule"
                 >
                 </v-switch>
               </div>
@@ -256,6 +277,7 @@
 <script>
 import tourBeendet from './tourAnsichtTourBeendet'
 import apiSendeAbgeschlosseneTour from './tourAnsichtApiSendeAbgeschlosseneTour'
+import login from './tourAnsichtLogin'
 
 export default {
   data() {
@@ -289,7 +311,8 @@ export default {
   },
   components: {
     tourBeendet, //Popup sobald tour beendet ist
-    apiSendeAbgeschlosseneTour
+    apiSendeAbgeschlosseneTour,
+    login
   },
   computed: {
     tourAbschnitte() {
@@ -381,7 +404,10 @@ export default {
         idSchuleOderSchueler: this.tourAbschnitte[nummerAbschnitt]
           .idSchuleOderSchueler,
         abschnittGpsX: '',
-        abschnittGpsY: ''
+        abschnittGpsY: '',
+        idSchule: this.tourAbschnitte[nummerAbschnitt].idSchule, //wird verwendet bei Schule Abschnitten
+        idSchueler: this.tourAbschnitte[nummerAbschnitt].idSchueler, //wird verwendet bei Schule Abschnitten
+        nameSchuleOderSchueler: this.tourAbschnitte[nummerAbschnitt].nameSchuleOderSchueler //wird verwendet bei Schule Abschnitten
       }
       try {
         const position = await this.getGpsLocation()

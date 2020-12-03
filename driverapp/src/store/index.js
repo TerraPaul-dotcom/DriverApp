@@ -57,7 +57,11 @@ export default new Vuex.Store({
       dauer: '',
       gestartet: false, //Wird nach Abschluss der Tour und erfolgreicher Übertragung an die Datenbank auf false zurückgesetzt.
       uebertragungAnDatenbankAbgeschlossen: false
-    } //gesamte Tour, dauer TODO: dauer eventuell direkt ins tour objekt schreiben, gestartet wird true sobald tour angefangen hat
+    }, //gesamte Tour, dauer TODO: dauer eventuell direkt ins tour objekt schreiben, gestartet wird true sobald tour angefangen hat
+    login: {
+      benutzerHashed: null,
+      passwortHashed: null
+    }
   },
   mutations: {
     dialogUpdateLoginLogout(state, value) {
@@ -83,6 +87,9 @@ export default new Vuex.Store({
     },
     updateTourCurrentUebertragungAbgeschlossen(state, value) {
       state.tourCurrent.uebertragungAnDatenbankAbgeschlossen = value
+    },
+    updateLogin(state, value) {
+      state.login = value
     }
   },
   actions: {
@@ -109,6 +116,9 @@ export default new Vuex.Store({
     },
     updateTourCurrentUebertragungAbgeschlossen(context, value) {
       context.commit('updateTourCurrentUebertragungAbgeschlossen', value)
+    },
+    updateLogin(context, value) {
+      context.commit('updateLogin', value)
     }
   },
   getters: {
@@ -120,6 +130,7 @@ export default new Vuex.Store({
     tourCurrentAbschnitte: state => state.tourCurrent.tour.tourAbschnitte,
     tourCurrentDauer: state => state.tourCurrent.dauer,
     tourCurrentGestartet: state => state.tourCurrent.gestartet,
-    tourCurrentUebertragungAbgeschlossen: state => state.tourCurrent.uebertragungAnDatenbankAbgeschlossen
+    tourCurrentUebertragungAbgeschlossen: state => state.tourCurrent.uebertragungAnDatenbankAbgeschlossen,
+    login: state => state.login
   }
 })

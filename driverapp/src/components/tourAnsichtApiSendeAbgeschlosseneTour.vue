@@ -12,7 +12,7 @@ export default {
         if (res.status === 200) {
             setTimeout(() => this.temporaereMethodeFürSubmitWegenTimeout(), 3000)
             
-        }
+        }//TODO: try catch einbauen
       },
       temporaereMethodeFürSubmitWegenTimeout () {
         this.$store.dispatch('updateTourCurrentUebertragungAbgeschlossen', true)
