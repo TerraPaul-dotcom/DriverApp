@@ -396,7 +396,6 @@ export default {
       this.einstiegJaNein = null
       this.abschnittFahrerInput = {
         tourAbschnittId: this.tourAbschnitte[nummerAbschnitt].tourAbschnittId,
-        tourId: this.tourAbschnitte[nummerAbschnitt].tourId,
         fahrzeugId: this.tourAbschnitte[nummerAbschnitt].fahrzeugId,
         fahrerId: this.tourAbschnitte[nummerAbschnitt].fahrerId,
         abschnittStop: date,
