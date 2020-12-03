@@ -40,7 +40,7 @@
           :complete="abschnittCurrent > j"
           :rules="[
             () =>
-              !schuelerNichtEingestiegen[j] ||
+              ( schuelerEingestiegen[j] === true || schuelerEingestiegen[j] === undefined || abschnitt.istEsEineSchule) ||
               tourGesamt.rueckfahrtAsStringMini === 'H'
           ]"
           v-if="abschnittCurrent <= j"
@@ -48,7 +48,7 @@
         >
           <small
             v-if="
-              schuelerNichtEingestiegen[j] &&
+              schuelerEingestiegen[j] == false &&
                 tourGesamt.rueckfahrtAsStringMini === 'R'
             "
             >Stopp entfällt</small
@@ -63,7 +63,7 @@
             @click.prevent="abschnittClickStop(j)"
             :disabled="abschnittStatus > 0"
             block
-            v-if="j === abschnittCurrent && !schuelerNichtEingestiegen[j]"
+            v-if="j === abschnittCurrent && (schuelerEingestiegen[j] == true || schuelerEingestiegen[j] === undefined || abschnitt.istEsEineSchule)"
             class="mt-2"
             >{{ `Stop` }}
           </v-btn>
@@ -71,7 +71,7 @@
           <div
             v-if="
               j === abschnittCurrent &&
-                schuelerNichtEingestiegen[j] &&
+                schuelerEingestiegen[j] == false && !abschnitt.istEsEineSchule && 
                 tourGesamt.rueckfahrtAsStringMini === 'R'
             "
           >
@@ -184,7 +184,7 @@
                   color="success"
                   v-model="ausstiegEinstiegAuswahl[k]"
                   class="ml-4"
-                  :disabled="schuelerNichtEingestiegen[k]"
+                  :disabled="schuelerEingestiegen[k] == false"
                   v-show="person.idSchule === tourAbschnitte[abschnittCurrent].idSchule"
                 >
                 </v-switch>
@@ -201,13 +201,12 @@
                   color="success"
                   v-model="ausstiegEinstiegAuswahl[k]"
                   class="ml-4"
-                  :disabled="schuelerNichtEingestiegen[k]"
                   v-show="person.idSchule === tourAbschnitte[abschnittCurrent].idSchule"
                 >
                 </v-switch>
               </div>
               <v-btn
-                @click.prevent="schuleAlleAuswaehlenAusstiegEinstieg()"
+                @click.prevent="schuleAlleAuswaehlenAusstiegEinstieg(tourAbschnitte[abschnittCurrent].idSchule)"
                 small
                 class="ml-4 mb-4"
                 >Alle Auswählen</v-btn
@@ -306,7 +305,7 @@ export default {
       //Abschnitte: Stop Date, Stop GPS, Schule/Schüler, Name Schüler*innen, Einstieg pro Schüler ja/nein, Ausstieg pro Schüler ja/nein,
       abschnittFahrerInput: {},
       dialogNachrichtAnFahrer: true,
-      schuelerNichtEingestiegen: [] //Wenn Schüler*in nicht einsteigt, wird hier true an die entsprechende Stelle geschrieben. Array wird dann genutzt um, Schüler für den Ausstieg auszublenden.
+      schuelerEingestiegen: [] //Wenn Schüler*in nicht einsteigt, wird hier true an die entsprechende Stelle geschrieben. Array wird dann genutzt um, Schüler für den Ausstieg auszublenden.
     }
   },
   components: {
@@ -444,7 +443,7 @@ export default {
       this.abschnittFahrerInput.einstieg = {
         [this.tourAbschnitte[nummerAbschnitt].idSchuleOderSchueler]: false
       }
-      this.schuelerNichtEingestiegen[nummerAbschnitt] = true
+      this.schuelerEingestiegen[nummerAbschnitt] = false
     },
     schuelerAuswahlGrundKeinEinstieg(nummerAbschnitt) {
       this.abschnittFahrerInput.auswahlGrundKeinEinstieg = this.optionenKeinEinstieg[
@@ -456,12 +455,13 @@ export default {
       this.abschnittCurrent += 1
       return nummerAbschnitt
     },
-    schuleAlleAuswaehlenAusstiegEinstieg() {
-      this.ausstiegEinstiegAuswahl = []
+    schuleAlleAuswaehlenAusstiegEinstieg(idSchule) { //TODO: Alle Auswählen funktioniert nicht!
+      //this.ausstiegEinstiegAuswahl = []
       for (let i = 0; i < this.tourAbschnitte.length; i++) {
-        if (!this.schuelerNichtEingestiegen[i]) {
+        if (this.schuelerEingestiegen[i] || this.tourGesamt.rueckfahrtAsStringMini === 'R') {
           this.ausstiegEinstiegAuswahl[i] = true
         }
+        return idSchule
       }
     },
     schuleClickOkNachAuswaehlen() {
@@ -484,10 +484,12 @@ export default {
         for (let i = 0; i < this.tourAbschnitte.length; i++) {
           einstieg[
             this.tourAbschnitte[i].idSchuleOderSchueler
-          ] = this.ausstiegEinstiegAuswahl[i]
-          this.schuelerNichtEingestiegen[i] = this.ausstiegEinstiegAuswahl[i]
-            ? false
-            : true
+          ] = this.ausstiegEinstiegAuswahl[i] ? true : false
+          console.log(einstieg);
+          this.schuelerEingestiegen[i] = this.ausstiegEinstiegAuswahl[i]
+            ? true
+            : false
+          console.log(this.ausstiegEinstiegAuswahl[i]);
         }
         this.abschnittFahrerInput.einstieg = einstieg
         this.tourFahrerInput.tourAbschnitte.push(this.abschnittFahrerInput)
@@ -508,7 +510,7 @@ export default {
       this.abschnittCurrent = -1
       this.tourFahrerInput = {tourAbschnitte: []}
       this.ausstiegEinstiegAuswahl = []
-      this.schuelerNichtEingestiegen = []
+      this.schuelerEingestiegen = []
     },
     getGpsLocation() {
       return new Promise(function(resolve, reject) {
