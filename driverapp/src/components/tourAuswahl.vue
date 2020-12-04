@@ -40,6 +40,8 @@
             <v-btn @click="tourAuswaehlen(0)">Hintour Manuell verkürzt</v-btn>
             <v-btn @click="tourAuswaehlen(1)">Hintour gesamte Länge</v-btn>
             <v-btn @click="tourAuswaehlen(2)">Rücktour gesamte Länge</v-btn>
+            <v-btn @click="tourAuswaehlen(3)">Hintour mit zwei Schulen</v-btn>
+            <v-btn @click="tourAuswaehlen(4)">Rücktour manuell erstellt(!) mit zwei Schulen</v-btn>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -80,7 +82,7 @@ export default {
     }
   },
   mounted() {
-    this.tourAuswaehlen(3)
+    this.tourAuswaehlen(4)
   }
 }
 </script>

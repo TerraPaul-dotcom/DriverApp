@@ -355,6 +355,7 @@ export default {
           begleitpersonAbholenJaNein: this.tourGesamt
             .begleitpersonAbholenJaNein,
           tourStart: date,
+          tourStop: null,
           tourAbschnitte: [],
           tourStartGpsX: '',
           tourStartGpsY: '',
@@ -392,12 +393,14 @@ export default {
       }
     },
     async abschnittClickStop(nummerAbschnitt) {
+      const date = new Date().toISOString().replace(/.\d+Z$/g, 'Z')
       this.abschnittStatus = 1
       this.einstiegJaNein = null
+      this.ausstiegEinstiegAuswahl = []
       this.abschnittFahrerInput = {
         tourAbschnittId: this.tourAbschnitte[nummerAbschnitt].tourAbschnittId,
-        fahrzeugId: this.tourAbschnitte[nummerAbschnitt].fahrzeugId,
-        fahrerId: this.tourAbschnitte[nummerAbschnitt].fahrerId,
+        fahrzeugId: this.tourGesamt.fahrzeugId,
+        fahrerId: this.tourGesamt.fahrerId,
         abschnittStop: date,
         idSchuleOderSchueler: this.tourAbschnitte[nummerAbschnitt]
           .idSchuleOderSchueler,
@@ -415,7 +418,6 @@ export default {
         this.abschnittFahrerInput.abschnittGpsX = e
         this.abschnittFahrerInput.abschnittGpsY = e
       }
-      const date = new Date().toISOString().replace(/.\d+Z$/g, 'Z')
       //TODO: GPS position abrufen und einfügen, achtung gefahr, dass anfangsgps genommen wird mit globaler variable, besser lokale variante um sicher zu gehen.
     },
     schuelerAuswahlEinstieg(nummerAbschnitt) {
@@ -429,6 +431,7 @@ export default {
       return nummerAbschnitt
     },
     schuelerAuswahlAusstieg(nummerAbschnitt, value) {
+      if (!value) this.abschnittClickStop(nummerAbschnitt) //TODO: Ist es bad style hier eine andere methode aufzurufen?
       this.abschnittStatus = 0
       this.abschnittCurrent += 1
       this.abschnittFahrerInput.ausstieg = {
