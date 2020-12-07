@@ -418,6 +418,7 @@ export default {
           this.tourFahrerInput.tourStopGpsY = e
           this.tourFahrerInput.tourStopGpsX = e
         } finally {
+          console.log(this.tourFahrerInput);
           this.$refs.apiSendeAbgeschlosseneTour.submitTourenAbgeschlossen(
             this.tourFahrerInput
           ) // greife auf methode in Componente apiSendeAbgeschlosseneTour zu

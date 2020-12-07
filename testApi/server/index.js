@@ -16,7 +16,7 @@ const app = express()
 //Middleware
 
 const corsOptions = {
-    origin: "http://localhost:8080"
+    origin: "http://localhost:8081"
 }
 
 app.use(cors(corsOptions))
@@ -36,7 +36,7 @@ const db = mongoose.connection
 db.on('error', error => console.error(error))
 db.once('open', () => console.log('Connected to Mongoose'))
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 4000
 
 //Routes
 app.use('/api/tour', tourRouter)
