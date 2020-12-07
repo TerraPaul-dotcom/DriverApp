@@ -185,7 +185,7 @@
                   v-model="ausstiegEinstiegAuswahl[k]"
                   class="ml-4"
                   :disabled="schuelerEingestiegen[k] == false"
-                  v-show="person.idSchule === tourAbschnitte[abschnittCurrent].idSchule"
+                  v-show="person.idSchule === tourAbschnitte[abschnittCurrent].idSchule && !person.istEsEineSchule"
                 >
                 </v-switch>
               </div>
@@ -201,7 +201,7 @@
                   color="success"
                   v-model="ausstiegEinstiegAuswahl[k]"
                   class="ml-4"
-                  v-show="person.idSchule === tourAbschnitte[abschnittCurrent].idSchule"
+                  v-show="person.idSchule === tourAbschnitte[abschnittCurrent].idSchule && !person.istEsEineSchule"
                 >
                 </v-switch>
               </div>
@@ -408,7 +408,8 @@ export default {
         abschnittGpsY: '',
         idSchule: this.tourAbschnitte[nummerAbschnitt].idSchule, //wird verwendet bei Schule Abschnitten
         idSchueler: this.tourAbschnitte[nummerAbschnitt].idSchueler, //wird verwendet bei Schule Abschnitten
-        nameSchuleOderSchueler: this.tourAbschnitte[nummerAbschnitt].nameSchuleOderSchueler //wird verwendet bei Schule Abschnitten
+        nameSchuleOderSchueler: this.tourAbschnitte[nummerAbschnitt].nameSchuleOderSchueler, //wird verwendet bei Schule Abschnitten
+        istEsEineSchule: this.tourAbschnitte[nummerAbschnitt].istEsEineSchule //wird verwendet um bei Schulen nur Schüler*innen anzuzeigen
       }
       try {
         const position = await this.getGpsLocation()
