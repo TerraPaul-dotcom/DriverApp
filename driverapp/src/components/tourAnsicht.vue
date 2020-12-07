@@ -553,10 +553,12 @@ export default {
             einstiegOderAusstieg: 'einstieg',
             auswahlGrundKeinEinstieg: null
           }
+        if (schueler.schuelerId && schueler.schulId === idSchule) {
+          this.abschnittFahrerInput.belegungsaenderung.push(schueler)
           this.schuelerEingestiegen[i] = this.ausstiegEinstiegAuswahl[i]
-            ? true
-            : false
-        if (schueler.schuelerId && schueler.schulId === idSchule) this.abschnittFahrerInput.belegungsaenderung.push(schueler)
+          ? true
+          : false
+        }
         }
         this.tourFahrerInput.tourAbschnitte.push(this.abschnittFahrerInput)
       }
