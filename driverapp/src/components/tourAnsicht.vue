@@ -232,7 +232,7 @@
                 >Alle Auswählen</v-btn
               >
               <v-btn
-                @click.prevent="schuleClickOkNachAuswaehlen()"
+                @click.prevent="schuleClickOkNachAuswaehlen(tourAbschnitte[abschnittCurrent].idSchule)"
                 small
                 block
                 class="ml-4 mb-4"
@@ -521,35 +521,43 @@ export default {
         return idSchule
       }
     },
-    schuleClickOkNachAuswaehlen() {
+    schuleClickOkNachAuswaehlen(idSchule) {
+
       //if Hintour
       if (this.tourGesamt.rueckfahrtAsStringMini === 'H') {
-        let ausstieg = {}
-        for (let i = 0; i < this.tourFahrerInput.tourAbschnitte.length; i++) {
-          ausstieg[
-            this.tourFahrerInput.tourAbschnitte[i].idSchuleOderSchueler
-          ] = this.ausstiegEinstiegAuswahl[i]
+        this.abschnittFahrerInput.belegungsaenderung = []
+        for (let i = 0; i < this.tourAbschnitte.length; i++) {
+          let schueler = {
+            schuelerId: this.tourAbschnitte[i].idSchueler,
+            schulId: this.tourAbschnitte[i].idSchule,
+            erfolgreich: this.ausstiegEinstiegAuswahl[i]
             ? this.ausstiegEinstiegAuswahl[i]
-            : false
+            : false,
+            einstiegOderAusstieg: 'ausstieg',
+            auswahlGrundKeinEinstieg: null
+          }
+        if (schueler.schuelerId && schueler.schulId === idSchule) this.abschnittFahrerInput.belegungsaenderung.push(schueler)
         }
-        this.abschnittFahrerInput.ausstieg = ausstieg
         this.tourFahrerInput.tourAbschnitte.push(this.abschnittFahrerInput)
       }
       //if Rücktour
       if (this.tourGesamt.rueckfahrtAsStringMini === 'R') {
-        let einstieg = {}
+        this.abschnittFahrerInput.belegungsaenderung = []
         for (let i = 0; i < this.tourAbschnitte.length; i++) {
-          einstieg[this.tourAbschnitte[i].idSchuleOderSchueler] = this
-            .ausstiegEinstiegAuswahl[i]
+          let schueler = {
+            schuelerId: this.tourAbschnitte[i].idSchueler,
+            schulId: this.tourAbschnitte[i].idSchule,
+            erfolgreich: this.ausstiegEinstiegAuswahl[i]
             ? true
-            : false
-          console.log(einstieg)
+            : false,
+            einstiegOderAusstieg: 'einstieg',
+            auswahlGrundKeinEinstieg: null
+          }
           this.schuelerEingestiegen[i] = this.ausstiegEinstiegAuswahl[i]
             ? true
             : false
-          console.log(this.ausstiegEinstiegAuswahl[i])
+        if (schueler.schuelerId && schueler.schulId === idSchule) this.abschnittFahrerInput.belegungsaenderung.push(schueler)
         }
-        this.abschnittFahrerInput.einstieg = einstieg
         this.tourFahrerInput.tourAbschnitte.push(this.abschnittFahrerInput)
       }
       this.abschnittStatus = 0
