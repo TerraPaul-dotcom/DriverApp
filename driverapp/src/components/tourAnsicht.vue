@@ -1,8 +1,9 @@
 <template>
   <div id="app">
     <!-- login falls nicht eingeloggt -->
-    <login v-if="false"></login>
+    <login v-if="!this.$store.getters.tourCurrentAktuelleTourVonDatenbankErhalten"></login>
 
+    <div v-if="this.$store.getters.tourCurrentAktuelleTourVonDatenbankErhalten">
     <!-- Hinweis falls keine Tour ausgewählt -->
     <span v-if="!tourAbschnitte.length"
       >Keine Tour Ausgewählt, bitte Tour auswählen.
@@ -286,6 +287,7 @@
         >Aktuell ausgewählte Tour: "{{ this.tourGesamt.tourName }}"</small
       >
     </div>
+    </div>
 
     <!-- Snackbar -->
     <v-snackbar v-model="snackbar" timeout="10000">
@@ -409,6 +411,8 @@ export default {
           .toISOString()
           .replace(/.\d+Z$/g, 'Z')
         this.tourFahrerInput.fahrerId = this.tourGesamt.fahrerId
+        this.tourFahrerInput.benutzer = this.$store.getters.login.benutzerHashed
+        this.tourFahrerInput.passwort = this.$store.getters.login.passwortHashed
         this.$store.dispatch('dialogUpdateTourBeendet', true)
         try {
           const position = await this.getGpsLocation()
@@ -418,7 +422,6 @@ export default {
           this.tourFahrerInput.tourStopGpsY = e
           this.tourFahrerInput.tourStopGpsX = e
         } finally {
-          console.log(this.tourFahrerInput);
           this.$refs.apiSendeAbgeschlosseneTour.submitTourenAbgeschlossen(
             this.tourFahrerInput
           ) // greife auf methode in Componente apiSendeAbgeschlosseneTour zu

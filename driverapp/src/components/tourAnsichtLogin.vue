@@ -5,8 +5,11 @@
         <v-list-item-content>
           <v-list-item-title>Anmeldung</v-list-item-title>
           <v-list-item-subtitle
-            >Bitte melden Sie sich an um die aktuelle Tour zu
+            >Bitte melden Sie sich an um Ihre aktuelle Tour zu
             starten.</v-list-item-subtitle
+          >
+          <v-list-item-subtitle
+            >Testlogin ist "user" - "user"</v-list-item-subtitle
           >
         </v-list-item-content>
       </v-list-item>
@@ -40,8 +43,8 @@ export default {
   data() {
     return {
       notifications: false,
-      benutzer: '',
-      passwort: ''
+      benutzer: 'user',
+      passwort: 'user'
     }
   },
   props: {
@@ -57,6 +60,8 @@ export default {
         const res = await api.post(`/tour`, {benutzer: md5(benutzer), passwort: md5(passwort)})
         if (res.status === 200) {
           this.$store.dispatch('updateLogin', {benutzerHashed: md5(benutzer), passwortHashed: md5(passwort)})
+          this.$store.dispatch('updateTourCurrent',res.data)
+          this.$store.dispatch('updateTourCurrentAktuelleTourVonDatenbankErhalten', true)
         }//TODO: try catch einbauen
       } catch (err) {
         console.log(err)

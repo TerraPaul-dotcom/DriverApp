@@ -2,7 +2,11 @@
   <v-app>
     <v-app-bar app color="light" light dense>
       <v-container fill-height>
-        <small><a href="http://localhost:3000/api/tourenAbgeschlossen/newest/" target="_blank">API</a></small>
+        <small>(Admin:</small>
+        <small><a href="" target="_blank">API</a></small>
+        <small>{{apiUrl}}</small>
+        <small @click.prevent="toggleDisplayTourAuswahl()">-   Tourauswahl</small>
+        <small>)</small>
         <v-spacer></v-spacer>
         <!-- Timer -->
         <span
@@ -26,7 +30,7 @@
       </v-container>
     </v-main>
 
-    <v-footer app>
+    <!-- <v-footer app>
       <v-bottom-navigation
         class="bottom-navigation"
         :value="valueBottomNavigation"
@@ -46,7 +50,7 @@
           <v-icon>mdi-account</v-icon>
         </v-btn>
       </v-bottom-navigation>
-    </v-footer>
+    </v-footer> -->
   </v-app>
 </template>
 
@@ -62,7 +66,8 @@ export default {
     return {
       valueBottomNavigation: 1,
       elapsedTime: 0,
-      timer: undefined
+      timer: undefined,
+      apiUrl: process.env.VUE_APP_API_URL
     }
   },
   components: {
@@ -90,7 +95,7 @@ export default {
     },
     stopTimer() {
       clearInterval(this.timer)
-      this.$store.dispatch('updateTourCurrentDauer', this.formattedElapsedTime)
+      //this.$store.dispatch('updateTourCurrentDauer', this.formattedElapsedTime) //TODO: dauer gibt es nicht mehr im store
     },
     resetTimer() {
       this.elapsedTime = 0

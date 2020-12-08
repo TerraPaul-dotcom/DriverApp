@@ -17,6 +17,8 @@ export default {
       temporaereMethodeFürSubmitWegenTimeout () {
         this.$store.dispatch('updateTourCurrentUebertragungAbgeschlossen', true)
         this.$store.dispatch('updateTourCurrentGestartet', false)
+        this.$store.dispatch('updateLogin', null)
+        this.$store.dispatch('updateTourCurrentAktuelleTourVonDatenbankErhalten', false)
         
       }
     },

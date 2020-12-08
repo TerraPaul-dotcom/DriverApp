@@ -37,9 +37,7 @@
         <v-list-item>
           <v-list-item-content>
             <v-list-item-title>Dauer</v-list-item-title>
-            <v-list-item-subtitle>{{
-              this.$store.getters.tourCurrentDauer
-            }}</v-list-item-subtitle>
+            <v-list-item-subtitle>TODO: Eventuell hier Wert anzeigen</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
       </v-list>
