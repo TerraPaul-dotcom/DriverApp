@@ -485,32 +485,6 @@ export default {
         this.tourFahrerInput.tourAbschnitte.push(this.abschnittFahrerInput)
       }
     },
-    /*  schuelerAuswahlEinstieg(nummerAbschnitt) {
-      this.abschnittStatus = 0
-      this.abschnittCurrent += 1
-      this.abschnittFahrerInput.einstieg = {
-        [this.tourAbschnitte[nummerAbschnitt].idSchuleOderSchueler]: true
-      }
-      this.abschnittFahrerInput.auswahlGrundKeinEinstieg = null
-      this.tourFahrerInput.tourAbschnitte.push(this.abschnittFahrerInput)
-      return nummerAbschnitt
-    }, */
-    /*  schuelerAuswahlAusstieg(nummerAbschnitt, value) {
-      if (!value) this.abschnittClickStop(nummerAbschnitt) //TODO: Ist es bad style hier eine andere methode aufzurufen?
-      this.abschnittStatus = 0
-      this.abschnittCurrent += 1
-      this.abschnittFahrerInput.ausstieg = {
-        [this.tourAbschnitte[nummerAbschnitt].idSchuleOderSchueler]: value
-      }
-      this.tourFahrerInput.tourAbschnitte.push(this.abschnittFahrerInput)
-      return nummerAbschnitt
-    }, */
-    /*  schuelerAuswahlKeinEinstieg(nummerAbschnitt) {
-      this.abschnittFahrerInput.einstieg = {
-        [this.tourAbschnitte[nummerAbschnitt].idSchuleOderSchueler]: false
-      }
-      this.schuelerEingestiegen[nummerAbschnitt] = false
-    }, */
     schuelerAuswahlGrundKeinEinstieg() {
       this.abschnittFahrerInput.belegungsaenderung[0].auswahlGrundKeinEinstieg = this.optionenKeinEinstieg[
         this.ausgewaehlteOptionenKeinEinstieg
@@ -594,17 +568,6 @@ export default {
       return new Promise(function(resolve, reject) {
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(
-            /* position => {
-              this.geolocation = [position.coords.latitude, position.coords.longitude]
-              resolve},
-            function(error) {
-              alert(error.message)
-              reject(error.message)
-            },
-            {
-              enableHighAccuracy: true,
-              timeout: 5000
-            } */
             position => {
               resolve([position.coords.latitude, position.coords.longitude])
             },
