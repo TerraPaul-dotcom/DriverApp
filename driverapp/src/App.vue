@@ -3,8 +3,7 @@
     <v-app-bar app color="light" light dense>
       <v-container fill-height>
         <small>(Admin:</small>
-        <small><a href="" target="_blank">API</a></small>
-        <small>{{apiUrl}}</small>
+        <small><a href="https://terradriverapp.de/api/tourenAbgeschlossen/newest" target="_blank">API</a></small>
         <small @click.prevent="toggleDisplayTourAuswahl()">-   Tourauswahl</small>
         <small>)</small>
         <v-spacer></v-spacer>
