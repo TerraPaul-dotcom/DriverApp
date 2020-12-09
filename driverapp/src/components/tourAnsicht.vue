@@ -1,292 +1,302 @@
 <template>
   <div id="app">
     <!-- login falls nicht eingeloggt -->
-    <login v-if="!this.$store.getters.tourCurrentAktuelleTourVonDatenbankErhalten"></login>
+    <login
+      v-if="!this.$store.getters.tourCurrentAktuelleTourVonDatenbankErhalten"
+    ></login>
 
     <div v-if="this.$store.getters.tourCurrentAktuelleTourVonDatenbankErhalten">
-    <!-- Hinweis falls keine Tour ausgewählt -->
-    <span v-if="!tourAbschnitte.length"
-      >Keine Tour Ausgewählt, bitte Tour auswählen.
-    </span>
+      <!-- Hinweis falls keine Tour ausgewählt -->
+      <span v-if="!tourAbschnitte.length"
+        >Keine Tour Ausgewählt, bitte Tour auswählen.
+      </span>
 
-    <!-- Nachricht an Fahrer*in -->
-    <v-alert
-      v-model="dialogNachrichtAnFahrer"
-      color="blue-grey"
-      dense
-      dismissible
-      type="info"
-    >
-      <small> Aktuelle Nachricht an Fahrer*in</small>
-    </v-alert>
+      <!-- Nachricht an Fahrer*in -->
+      <v-alert
+        v-model="dialogNachrichtAnFahrer"
+        color="blue-grey"
+        dense
+        dismissible
+        type="info"
+      >
+        <small> Aktuelle Nachricht an Fahrer*in</small>
+      </v-alert>
 
-    <!-- Progress Bar -->
-    <v-progress-linear
-      :value="(abschnittCurrent / tourAbschnitte.length) * 100"
-      color="primary"
-      v-if="abschnittCurrent <= tourAbschnitte.length && abschnittCurrent >= 0"
-    ></v-progress-linear>
+      <!-- Progress Bar -->
+      <v-progress-linear
+        :value="(abschnittCurrent / tourAbschnitte.length) * 100"
+        color="primary"
+        v-if="
+          abschnittCurrent <= tourAbschnitte.length && abschnittCurrent >= 0
+        "
+      ></v-progress-linear>
 
-    <!-- Tour Ansicht -->
-    <v-stepper
-      class="d-flex flex-column mb-6"
-      v-model="abschnittCurrent"
-      vertical
-      v-if="abschnittCurrent < tourAbschnitte.length && abschnittCurrent >= 0"
-    >
-      <div v-for="(abschnitt, j) in tourAbschnitte" :key="j">
-        <!-- Abschnitt Titel mit Name und Adresse etc. -->
-        <v-stepper-step
-          :step="j"
-          :complete="abschnittCurrent > j"
-          :rules="[
-            () =>
-              schuelerEingestiegen[j] === true ||
-              schuelerEingestiegen[j] === undefined ||
-              abschnitt.istEsEineSchule ||
-              tourGesamt.rueckfahrtAsStringMini === 'H'
-          ]"
-          v-if="abschnittCurrent <= j"
-          error-icon="$info"
-        >
-          <small
-            v-if="
-              schuelerEingestiegen[j] == false &&
-                tourGesamt.rueckfahrtAsStringMini === 'R'
-            "
-            >Stopp entfällt</small
+      <!-- Tour Ansicht -->
+      <v-stepper
+        class="d-flex flex-column mb-6"
+        v-model="abschnittCurrent"
+        vertical
+        v-if="abschnittCurrent < tourAbschnitte.length && abschnittCurrent >= 0"
+      >
+        <div v-for="(abschnitt, j) in tourAbschnitte" :key="j">
+          <!-- Abschnitt Titel mit Name und Adresse etc. -->
+          <v-stepper-step
+            :step="j"
+            :complete="abschnittCurrent > j"
+            :rules="[
+              () =>
+                schuelerEingestiegen[j] === true ||
+                schuelerEingestiegen[j] === undefined ||
+                abschnitt.istEsEineSchule ||
+                tourGesamt.rueckfahrtAsStringMini === 'H'
+            ]"
+            v-if="abschnittCurrent <= j"
+            error-icon="$info"
           >
-          {{
-            `${abschnitt.haltepunktStrasseUndNummer}, ${abschnitt.haltepunktOrt} (${abschnitt.uhrzeitBeginnStrFormatiertHhMm})`
-          }}
-          <small>{{ `${abschnitt.nameSchuleOderSchueler}` }}</small>
-          <!-- if Schüler Einstieg oder Ausstieg -->
-          <v-btn
-            color="primary"
-            @click.prevent="abschnittClickStop(j)"
-            :disabled="abschnittStatus > 0"
-            block
-            v-if="
-              j === abschnittCurrent &&
-                (schuelerEingestiegen[j] == true ||
-                  schuelerEingestiegen[j] === undefined ||
-                  abschnitt.istEsEineSchule)
-            "
-            class="mt-2"
-            >{{ `Stop` }}
-          </v-btn>
-          <!-- if Schüler*in nicht aussteigt bei Rücktour weil er/sie nicht eingestiegen ist -->
-          <div
-            v-if="
-              j === abschnittCurrent &&
+            <small
+              v-if="
                 schuelerEingestiegen[j] == false &&
-                !abschnitt.istEsEineSchule &&
-                tourGesamt.rueckfahrtAsStringMini === 'R'
-            "
-          >
-            <div class="text-center">
-              <div class="py-2">Nicht eingestiegen</div>
-            </div>
+                  tourGesamt.rueckfahrtAsStringMini === 'R'
+              "
+              >Stopp entfällt</small
+            >
+            {{
+              `${abschnitt.haltepunktStrasseUndNummer}, ${abschnitt.haltepunktOrt} (${abschnitt.uhrzeitBeginnStrFormatiertHhMm})`
+            }}
+            <small>{{ `${abschnitt.nameSchuleOderSchueler}` }}</small>
+            <!-- if Schüler Einstieg oder Ausstieg -->
             <v-btn
               color="primary"
-              @click.prevent="
-                schuelerAuswahlEinstiegOderAusstieg('ausstieg', j, false)
-              "
+              @click.prevent="abschnittClickStop(j)"
               :disabled="abschnittStatus > 0"
               block
+              v-if="
+                j === abschnittCurrent &&
+                  (schuelerEingestiegen[j] == true ||
+                    schuelerEingestiegen[j] === undefined ||
+                    abschnitt.istEsEineSchule)
+              "
               class="mt-2"
-              >{{ `Ok` }}
+              >{{ `Stop` }}
             </v-btn>
-          </div>
-        </v-stepper-step>
-        <!-- Abschnitt Content -->
-        <v-stepper-content :step="j">
-          <!-- If Schüler -->
-          <v-card class=" px-3 pb-2" max-width="500" v-if="abschnittStatus > 0">
+            <!-- if Schüler*in nicht aussteigt bei Rücktour weil er/sie nicht eingestiegen ist -->
             <div
-              v-if="abschnitt.istEsEinSchueler === true && abschnittStatus > 0"
+              v-if="
+                j === abschnittCurrent &&
+                  schuelerEingestiegen[j] == false &&
+                  !abschnitt.istEsEineSchule &&
+                  tourGesamt.rueckfahrtAsStringMini === 'R'
+              "
             >
-              <!-- If Hintour -->
-              <div v-if="tourGesamt.rueckfahrtAsStringMini === 'H'">
-                <div class="text-center text-uppercase">
-                  <div class="py-2">
-                    {{ abschnitt.nameSchuleOderSchueler }}:
-                  </div>
-                </div>
-                <v-btn
-                  block
-                  class="mb-2"
-                  color="success"
-                  @click.prevent="
-                    schuelerAuswahlEinstiegOderAusstieg('einstieg', j, true)
-                  "
-                >
-                  Einstieg
-                </v-btn>
-
-                <v-btn
-                  block
-                  color="error"
-                  elevation="1"
-                  @click.prevent="
-                    schuelerAuswahlEinstiegOderAusstieg('einstieg', j, false)
-                  "
-                  class="mb-2"
-                >
-                  Kein Einstieg
-                </v-btn>
-
-                <v-card
-                  class="py-2 px-1"
-                  v-if="abschnittStatus === 3"
-                  elevation="1"
-                >
-                  <v-list>
-                    <v-list-item-group
-                      v-model="ausgewaehlteOptionenKeinEinstieg"
-                    >
-                      <v-list-item
-                        v-for="(item, i) in optionenKeinEinstieg"
-                        :key="i"
-                      >
-                        <v-list-item-content>
-                          <v-list-item-title
-                            v-text="item.beschriftung"
-                            @click.prevent="
-                              ausgewaehlteOptionenKeinEinstieg = i
-                              schuelerAuswahlGrundKeinEinstieg()
-                            "
-                          ></v-list-item-title>
-                        </v-list-item-content>
-                      </v-list-item>
-                    </v-list-item-group>
-                  </v-list>
-                </v-card>
-              </div>
-              <!-- if Rücktour -->
-              <div v-if="tourGesamt.rueckfahrtAsStringMini === 'R'">
-                <div class="text-center text-uppercase">
-                  <div class="py-2">
-                    {{ abschnitt.nameSchuleOderSchueler }}:
-                  </div>
-                </div>
-                <v-btn
-                  block
-                  class="mb-2"
-                  color="success"
-                  @click.prevent="
-                    schuelerAuswahlEinstiegOderAusstieg('ausstieg', j, true)
-                  "
-                >
-                  Ausstieg
-                </v-btn>
-              </div>
-            </div>
-
-            <!-- If Schule -->
-            <div
-              v-if="abschnitt.istEsEineSchule === true && abschnittStatus > 0"
-            >
-              <span>{{ textEinOderAusstiegBeiSchule }}</span>
-              <v-spacer></v-spacer>
-
-              <!-- if Hintour -->
-              <div v-if="tourGesamt.rueckfahrtAsStringMini === 'H'">
-                <v-switch
-                  v-for="(person, k) in tourFahrerInput.tourAbschnitte"
-                  :key="k"
-                  :label="String(person.nameSchuleOderSchueler)"
-                  :true-value="true"
-                  :false-value="false"
-                  color="success"
-                  v-model="ausstiegEinstiegAuswahl[k]"
-                  class="ml-4"
-                  :disabled="schuelerEingestiegen[k] == false"
-                  v-show="
-                    person.idSchule ===
-                      tourAbschnitte[abschnittCurrent].idSchule &&
-                      !person.istEsEineSchule
-                  "
-                >
-                </v-switch>
-              </div>
-
-              <!-- if Rücktour -->
-              <div v-if="tourGesamt.rueckfahrtAsStringMini === 'R'">
-                <v-switch
-                  v-for="(person, k) in tourAbschnitte"
-                  :key="k"
-                  :label="person.nameSchuleOderSchueler"
-                  :true-value="true"
-                  :false-value="false"
-                  color="success"
-                  v-model="ausstiegEinstiegAuswahl[k]"
-                  class="ml-4"
-                  v-show="
-                    person.idSchule ===
-                      tourAbschnitte[abschnittCurrent].idSchule &&
-                      !person.istEsEineSchule
-                  "
-                >
-                </v-switch>
+              <div class="text-center">
+                <div class="py-2">Nicht eingestiegen</div>
               </div>
               <v-btn
+                color="primary"
                 @click.prevent="
-                  schuleAlleAuswaehlenAusstiegEinstieg(
-                    tourAbschnitte[abschnittCurrent].idSchule
-                  )
+                  schuelerAuswahlEinstiegOderAusstieg('ausstieg', j, false)
                 "
-                small
-                class="ml-4 mb-4"
-                >Alle Auswählen</v-btn
-              >
-              <v-btn
-                @click.prevent="
-                  schuleClickOkNachAuswaehlen(
-                    tourAbschnitte[abschnittCurrent].idSchule
-                  )
-                "
-                small
+                :disabled="abschnittStatus > 0"
                 block
-                class="ml-4 mb-4"
-                >Ok</v-btn
-              >
+                class="mt-2"
+                >{{ `Ok` }}
+              </v-btn>
             </div>
-          </v-card>
-        </v-stepper-content>
-      </div>
-    </v-stepper>
+          </v-stepper-step>
+          <!-- Abschnitt Content -->
+          <v-stepper-content :step="j">
+            <!-- If Schüler -->
+            <v-card
+              class=" px-3 pb-2"
+              max-width="500"
+              v-if="abschnittStatus > 0"
+            >
+              <div
+                v-if="
+                  abschnitt.istEsEinSchueler === true && abschnittStatus > 0
+                "
+              >
+                <!-- If Hintour -->
+                <div v-if="tourGesamt.rueckfahrtAsStringMini === 'H'">
+                  <div class="text-center text-uppercase">
+                    <div class="py-2">
+                      {{ abschnitt.nameSchuleOderSchueler }}:
+                    </div>
+                  </div>
+                  <v-btn
+                    block
+                    class="mb-2"
+                    color="success"
+                    @click.prevent="
+                      schuelerAuswahlEinstiegOderAusstieg('einstieg', j, true)
+                    "
+                  >
+                    Einstieg
+                  </v-btn>
 
-    <!-- Start-Stop-Button -->
+                  <v-btn
+                    block
+                    color="error"
+                    elevation="1"
+                    @click.prevent="
+                      schuelerAuswahlEinstiegOderAusstieg('einstieg', j, false)
+                    "
+                    class="mb-2"
+                  >
+                    Kein Einstieg
+                  </v-btn>
 
-    <v-btn
-      rounded
-      :disabled="
-        this.tourGesamt.tourName === '' ||
-          this.tourGesamt.tourName === null ||
-          this.tourGesamt.tourName === undefined
-      "
-      block
-      color="primary"
-      elevation="2"
-      @click.prevent="starteBeendeTour()"
-      v-if="
-        (abschnittCurrent === -1 && tourAbschnitte.length) ||
-          abschnittCurrent === tourAbschnitte.length
-      "
-      class="my-5"
-    >
-      {{ buttonTextStartStop }}
-    </v-btn>
-    <div class="text-center">
-      <small
+                  <v-card
+                    class="py-2 px-1"
+                    v-if="abschnittStatus === 3"
+                    elevation="1"
+                  >
+                    <v-list>
+                      <v-list-item-group
+                        v-model="ausgewaehlteOptionenKeinEinstieg"
+                      >
+                        <v-list-item
+                          v-for="(item, i) in optionenKeinEinstieg"
+                          :key="i"
+                        >
+                          <v-list-item-content>
+                            <v-list-item-title
+                              v-text="item.beschriftung"
+                              @click.prevent="
+                                ausgewaehlteOptionenKeinEinstieg = i
+                                schuelerAuswahlGrundKeinEinstieg()
+                              "
+                            ></v-list-item-title>
+                          </v-list-item-content>
+                        </v-list-item>
+                      </v-list-item-group>
+                    </v-list>
+                  </v-card>
+                </div>
+                <!-- if Rücktour -->
+                <div v-if="tourGesamt.rueckfahrtAsStringMini === 'R'">
+                  <div class="text-center text-uppercase">
+                    <div class="py-2">
+                      {{ abschnitt.nameSchuleOderSchueler }}:
+                    </div>
+                  </div>
+                  <v-btn
+                    block
+                    class="mb-2"
+                    color="success"
+                    @click.prevent="
+                      schuelerAuswahlEinstiegOderAusstieg('ausstieg', j, true)
+                    "
+                  >
+                    Ausstieg
+                  </v-btn>
+                </div>
+              </div>
+
+              <!-- If Schule -->
+              <div
+                v-if="abschnitt.istEsEineSchule === true && abschnittStatus > 0"
+              >
+                <span>{{ textEinOderAusstiegBeiSchule }}</span>
+                <v-spacer></v-spacer>
+
+                <!-- if Hintour -->
+                <div v-if="tourGesamt.rueckfahrtAsStringMini === 'H'">
+                  <v-switch
+                    v-for="(person, k) in tourFahrerInput.tourAbschnitte"
+                    :key="k"
+                    :label="String(person.nameSchuleOderSchueler)"
+                    :true-value="true"
+                    :false-value="false"
+                    color="success"
+                    v-model="ausstiegEinstiegAuswahl[k]"
+                    class="ml-4"
+                    :disabled="schuelerEingestiegen[k] == false"
+                    v-show="
+                      person.idSchule ===
+                        tourAbschnitte[abschnittCurrent].idSchule &&
+                        !person.istEsEineSchule
+                    "
+                  >
+                  </v-switch>
+                </div>
+
+                <!-- if Rücktour -->
+                <div v-if="tourGesamt.rueckfahrtAsStringMini === 'R'">
+                  <v-switch
+                    v-for="(person, k) in tourAbschnitte"
+                    :key="k"
+                    :label="person.nameSchuleOderSchueler"
+                    :true-value="true"
+                    :false-value="false"
+                    color="success"
+                    v-model="ausstiegEinstiegAuswahl[k]"
+                    class="ml-4"
+                    v-show="
+                      person.idSchule ===
+                        tourAbschnitte[abschnittCurrent].idSchule &&
+                        !person.istEsEineSchule
+                    "
+                  >
+                  </v-switch>
+                </div>
+                <v-btn
+                  @click.prevent="
+                    schuleAlleAuswaehlenAusstiegEinstieg(
+                      tourAbschnitte[abschnittCurrent].idSchule
+                    )
+                  "
+                  small
+                  class="ml-4 mb-4"
+                  >Alle Auswählen</v-btn
+                >
+                <v-btn
+                  @click.prevent="
+                    schuleClickOkNachAuswaehlen(
+                      tourAbschnitte[abschnittCurrent].idSchule
+                    )
+                  "
+                  small
+                  block
+                  class="ml-4 mb-4"
+                  >Ok</v-btn
+                >
+              </div>
+            </v-card>
+          </v-stepper-content>
+        </div>
+      </v-stepper>
+
+      <!-- Start-Stop-Button -->
+
+      <v-btn
+        rounded
+        :disabled="
+          this.tourGesamt.tourName === '' ||
+            this.tourGesamt.tourName === null ||
+            this.tourGesamt.tourName === undefined
+        "
+        block
+        color="primary"
+        elevation="2"
+        @click.prevent="starteBeendeTour()"
         v-if="
           (abschnittCurrent === -1 && tourAbschnitte.length) ||
             abschnittCurrent === tourAbschnitte.length
         "
-        >Aktuell ausgewählte Tour: "{{ this.tourGesamt.tourName }}"</small
+        class="my-5"
       >
-    </div>
+        {{ buttonTextStartStop }}
+      </v-btn>
+      <div class="text-center">
+        <small
+          v-if="
+            (abschnittCurrent === -1 && tourAbschnitte.length) ||
+              abschnittCurrent === tourAbschnitte.length
+          "
+          >Aktuell ausgewählte Tour: "{{ this.tourGesamt.tourName }}"</small
+        >
+      </div>
     </div>
 
     <!-- Snackbar -->
