@@ -210,7 +210,6 @@
                     :false-value="false"
                     color="success"
                     v-model="ausstiegEinstiegAuswahl[k]"
-                    class="ml-4"
                     :disabled="schuelerEingestiegen[k] == false"
                     v-show="
                       person.idSchule ===
@@ -223,33 +222,48 @@
 
                 <!-- if Rücktour -->
                 <div v-if="tourGesamt.rueckfahrtAsStringMini === 'R'">
-                  <v-switch
+                  <v-btn
+                    @click.prevent="
+                      schuleAlleAuswaehlenAusstiegEinstieg(
+                        tourAbschnitte[abschnittCurrent].idSchule
+                      )
+                    "
+                    small
+                    class="ml-4 mb-4"
+                    >Alle Auswählen</v-btn
+                  >
+                  <div
                     v-for="(person, k) in tourAbschnitte"
                     :key="k"
-                    :label="person.nameSchuleOderSchueler"
-                    :true-value="true"
-                    :false-value="false"
-                    color="success"
-                    v-model="ausstiegEinstiegAuswahl[k]"
-                    class="ml-4"
                     v-show="
                       person.idSchule ===
                         tourAbschnitte[abschnittCurrent].idSchule &&
                         !person.istEsEineSchule
                     "
                   >
-                  </v-switch>
+                    <v-switch
+                      :label="person.nameSchuleOderSchueler"
+                      :true-value="true"
+                      :false-value="false"
+                      color="success"
+                      v-model="ausstiegEinstiegAuswahl[k]"
+                    >
+                    </v-switch>
+                    <!-- Option für fehlenden Einstieg auswählen -->
+                    <!-- TODO: momentan ist grundKeinEinstieg nicht required, überlegen ob das required werden soll und wann -->
+                    <v-select
+                      :items="optionenKeinEinstieg"
+                      :label="person.nameSchuleOderSchueler"
+                      item-text="beschriftung"
+                      item-value="id"
+                      hint="Grund für fehlenden Einstieg"
+                      dense
+                      persistent-hint
+                      v-show="!ausstiegEinstiegAuswahl[k]"
+                      v-model="ausgewaehlteOptionenKeinEinstieg[k]"
+                    ></v-select>
+                  </div>
                 </div>
-                <v-btn
-                  @click.prevent="
-                    schuleAlleAuswaehlenAusstiegEinstieg(
-                      tourAbschnitte[abschnittCurrent].idSchule
-                    )
-                  "
-                  small
-                  class="ml-4 mb-4"
-                  >Alle Auswählen</v-btn
-                >
                 <v-btn
                   @click.prevent="
                     schuleClickOkNachAuswaehlen(
@@ -339,7 +353,7 @@ export default {
         {beschriftung: 'xxxx', id: 95},
         {beschriftung: 'yyyyy', id: 96}
       ], //Optionen falls keine Einstieg
-      ausgewaehlteOptionenKeinEinstieg: null,
+      ausgewaehlteOptionenKeinEinstieg: [],
       snackbar: false, //toggle Anzeige snackbar
       snackbarText: null,
       ausstiegEinstiegAuswahl: [],
@@ -548,7 +562,11 @@ export default {
             schulId: this.tourAbschnitte[i].idSchule,
             erfolgreich: this.ausstiegEinstiegAuswahl[i] ? true : false,
             einstiegOderAusstieg: 'einstieg',
-            auswahlGrundKeinEinstieg: null
+            auswahlGrundKeinEinstieg:
+              this.ausgewaehlteOptionenKeinEinstieg[i] &&
+              !this.ausstiegEinstiegAuswahl[i]
+                ? this.ausgewaehlteOptionenKeinEinstieg[i]
+                : null
           }
           if (schueler.schuelerId && schueler.schulId === idSchule) {
             this.abschnittFahrerInput.belegungsaenderung.push(schueler)
