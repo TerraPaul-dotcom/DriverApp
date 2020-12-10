@@ -487,20 +487,11 @@ export default {
       nummerAbschnitt,
       erfolgreich
     ) {
-      this.abschnittFahrerInput.belegungsaenderung = [
-        {
-          schuelerId: this.tourAbschnitte[nummerAbschnitt].idSchueler,
-          erfolgreich: erfolgreich,
-          einstiegOderAusstieg: einstiegOderAusstieg,
-          auswahlGrundKeinEinstieg: null
-        }
-      ]
       this.schuelerEingestiegen[nummerAbschnitt] = erfolgreich
       if (einstiegOderAusstieg === 'einstieg') {
         if (erfolgreich) {
           this.abschnittStatus = 0
           this.abschnittCurrent += 1
-          this.tourFahrerInput.tourAbschnitte.push(this.abschnittFahrerInput)
         } else {
           this.abschnittStatus = 3
         }
@@ -509,8 +500,16 @@ export default {
         if (!erfolgreich) this.abschnittClickStop(nummerAbschnitt) //TODO: Ist es bad style hier eine andere methode aufzurufen?
         this.abschnittStatus = 0
         this.abschnittCurrent += 1
-        this.tourFahrerInput.tourAbschnitte.push(this.abschnittFahrerInput)
       }
+      this.abschnittFahrerInput.belegungsaenderung = [
+        {
+          schuelerId: this.tourAbschnitte[nummerAbschnitt].idSchueler,
+          erfolgreich: erfolgreich,
+          einstiegOderAusstieg: einstiegOderAusstieg,
+          auswahlGrundKeinEinstieg: null
+        }
+      ]
+      if (!(einstiegOderAusstieg === 'einstieg' && !erfolgreich)) this.tourFahrerInput.tourAbschnitte.push(this.abschnittFahrerInput)
     },
     schuelerAuswahlGrundKeinEinstieg() {
       this.abschnittFahrerInput.belegungsaenderung[0].auswahlGrundKeinEinstieg = this.optionenKeinEinstieg[
