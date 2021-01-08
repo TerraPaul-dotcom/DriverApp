@@ -335,6 +335,7 @@
 import tourBeendet from './tourAnsichtTourBeendet'
 import apiSendeAbgeschlosseneTour from './tourAnsichtApiSendeAbgeschlosseneTour'
 import login from './tourAnsichtLogin'
+import stayAwake from './stayawake.js'
 
 export default {
   data() {
@@ -396,10 +397,14 @@ export default {
       } else return ''
     }
   },
+  mounted() {
+    stayAwake.init()
+  },
   methods: {
     async starteBeendeTour() {
       //Tour starten
       if (this.abschnittCurrent === -1) {
+        stayAwake.enable() // Initiate the module which creates a hidden video element on the page
         this.$store.dispatch('updateTourCurrentGestartet', true)
         this.$emit('startTimer')
         this.abschnittCurrent = 0
@@ -430,6 +435,7 @@ export default {
         }
       } else {
         //Tour beenden
+        stayAwake.disable() //Stops stayawake
         this.$emit('stopTimer')
         this.tourFahrerInput.tourStop = new Date()
           .toISOString()
