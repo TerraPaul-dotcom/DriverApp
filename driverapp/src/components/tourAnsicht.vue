@@ -459,8 +459,6 @@ export default {
       this.ausstiegEinstiegAuswahl = []
       this.abschnittFahrerInput = {
         tourAbschnittId: this.tourAbschnitte[nummerAbschnitt].tourAbschnittId,
-        fahrzeugId: this.tourGesamt.fahrzeugId,
-        fahrerId: this.tourGesamt.fahrerId,
         abschnittStop: date,
         idSchuleOderSchueler: this.tourAbschnitte[nummerAbschnitt]
           .idSchuleOderSchueler,

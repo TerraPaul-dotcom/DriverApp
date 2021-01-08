@@ -10,11 +10,11 @@ export default {
         async submitTourenAbgeschlossen(fahrerInput) {
         const res = await api.post(`/tourenAbgeschlossen`, fahrerInput)
         if (res.status === 200) {
-            setTimeout(() => this.temporaereMethodeFürSubmitWegenTimeout(), 3000)
+            this.updateStore()
             
         }//TODO: try catch einbauen
       },
-      temporaereMethodeFürSubmitWegenTimeout () {
+      updateStore () {
         this.$store.dispatch('updateTourCurrentUebertragungAbgeschlossen', true)
         this.$store.dispatch('updateTourCurrentGestartet', false)
         this.$store.dispatch('updateLogin', null)
