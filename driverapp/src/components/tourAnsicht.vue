@@ -397,10 +397,14 @@ export default {
       } else return ''
     }
   },
+  mounted() {
+    this.noSleep()
+  },
   methods: {
     async starteBeendeTour() {
       //Tour starten
       if (this.abschnittCurrent === -1) {
+        
         this.$store.dispatch('updateTourCurrentGestartet', true)
         this.$emit('startTimer')
         this.abschnittCurrent = 0
@@ -616,8 +620,18 @@ export default {
           reject
         }
       })
+    },
+    noSleep () {
+    let noSleep = new this.$NoSleep();
+    document.addEventListener('click',
+      function enableNoSleep () {
+        noSleep.enable();
+        document.removeEventListener('click', enableNoSleep, false);
+      },
+      false);
     }
-  }
+  },
+  
 }
 </script>
 
