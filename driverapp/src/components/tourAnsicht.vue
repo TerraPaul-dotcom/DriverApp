@@ -398,7 +398,7 @@ export default {
       } else return ''
     }
   },
-  mounted() {
+  created() {
     stayAwake.init()
   },
   methods: {
