@@ -335,7 +335,8 @@
 import tourBeendet from './tourAnsichtTourBeendet'
 import apiSendeAbgeschlosseneTour from './tourAnsichtApiSendeAbgeschlosseneTour'
 import login from './tourAnsichtLogin'
-import stayAwake from './stayawake.js'
+import stayAwake from 'stayawake.js'
+
 
 export default {
   data() {
