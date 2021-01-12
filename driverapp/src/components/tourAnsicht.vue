@@ -398,11 +398,12 @@ export default {
     }
   },
   mounted() {
-    this.noSleep()
+    this.noSleep(true)
   },
   methods: {
     async starteBeendeTour() {
       //Tour starten
+      this.noSleep(false)
       if (this.abschnittCurrent === -1) {
         
         this.$store.dispatch('updateTourCurrentGestartet', true)
@@ -621,14 +622,22 @@ export default {
         }
       })
     },
-    noSleep () {
-    let noSleep = new this.$NoSleep();
-    document.addEventListener('click',
-      function enableNoSleep () {
-        noSleep.enable();
-        document.removeEventListener('click', enableNoSleep, false);
-      },
-      false);
+    noSleep (state) {
+      let noSleep = new this.$NoSleep()
+      if (state){
+        document.addEventListener('click',
+        function enableNoSleep () {
+          noSleep.enable()
+          document.removeEventListener('click', enableNoSleep, false)
+        },
+        false)
+        console.log('enable');
+      }
+      else {
+        let noSleep = new this.$NoSleep()
+        noSleep.disable()
+        console.log('disable');
+      }
     }
   },
   
