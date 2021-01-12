@@ -222,7 +222,7 @@
 
                 <!-- if Rücktour -->
                 <div v-if="tourGesamt.rueckfahrtAsStringMini === 'R'">
-                  <v-btn
+                  <!-- <v-btn
                     @click.prevent="
                       schuleAlleAuswaehlenAusstiegEinstieg(
                         tourAbschnitte[abschnittCurrent].idSchule
@@ -231,7 +231,7 @@
                     small
                     class="ml-4 mb-4"
                     >Alle Auswählen</v-btn
-                  >
+                  > -->
                   <div
                     v-for="(person, k) in tourAbschnitte"
                     :key="k"
@@ -250,7 +250,7 @@
                     >
                     </v-switch>
                     <!-- Option für fehlenden Einstieg auswählen -->
-                    <!-- TODO: momentan ist grundKeinEinstieg nicht required, überlegen ob das required werden soll und wann -->
+                    <!-- TODO : momentan ist grundKeinEinstieg nicht required, überlegen ob das required werden soll und wann -->
                     <v-select
                       :items="optionenKeinEinstieg"
                       :label="person.nameSchuleOderSchueler"
@@ -398,14 +398,12 @@ export default {
     }
   },
   mounted() {
-    this.noSleep(true)
-  },
+    },
   methods: {
     async starteBeendeTour() {
       //Tour starten
-      this.noSleep(false)
       if (this.abschnittCurrent === -1) {
-        
+        this.noSleep(true)
         this.$store.dispatch('updateTourCurrentGestartet', true)
         this.$emit('startTimer')
         this.abschnittCurrent = 0
@@ -529,12 +527,13 @@ export default {
       //this.ausstiegEinstiegAuswahl = []
       for (let i = 0; i < this.tourAbschnitte.length; i++) {
         if (
-          this.schuelerEingestiegen[i] ||
-          this.tourGesamt.rueckfahrtAsStringMini === 'R'
+          this.tourAbschnitte[i].idSchule == idSchule ||
+          this.schuelerEingestiegen[i] //||
+          //this.tourGesamt.rueckfahrtAsStringMini === 'R'
         ) {
           this.ausstiegEinstiegAuswahl[i] = true
         }
-        return idSchule
+        //return idSchule
       }
     },
     schuleClickOkNachAuswaehlen(idSchule) {
@@ -623,20 +622,18 @@ export default {
       })
     },
     noSleep (state) {
-      let noSleep = new this.$NoSleep()
       if (state){
+        let noSleep = new this.$NoSleep()
         document.addEventListener('click',
         function enableNoSleep () {
           noSleep.enable()
           document.removeEventListener('click', enableNoSleep, false)
         },
         false)
-        console.log('enable');
       }
       else {
         let noSleep = new this.$NoSleep()
         noSleep.disable()
-        console.log('disable');
       }
     }
   },
