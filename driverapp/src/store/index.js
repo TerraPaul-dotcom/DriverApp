@@ -56,7 +56,8 @@ export default new Vuex.Store({
       },
       aktuelleTourVonDatenbankErhalten: false,
       gestartet: false, //Wird nach Abschluss der Tour und erfolgreicher Übertragung an die Datenbank auf false zurückgesetzt.
-      uebertragungAnDatenbankAbgeschlossen: false
+      uebertragungAnDatenbankAbgeschlossen: false,
+      beendet: false //wird beim beenden auf true gesetzt und nach abschluss der Übertragung auf false
     }, 
     login: {
       benutzerHashed: null,
@@ -85,11 +86,21 @@ export default new Vuex.Store({
     updateTourCurrentGestartet(state, value) {
       state.tourCurrent.gestartet = value
     },
+    updateTourCurrentBeendet(state, value) {
+      localStorage.setItem('tourBeendet', value)
+      state.tourCurrent.beendet = value
+    },
     updateTourCurrentUebertragungAbgeschlossen(state, value) {
+      //localStorage.setItem('uebertragungAnDatenbankAbgeschlossen', value)
       state.tourCurrent.uebertragungAnDatenbankAbgeschlossen = value
     },
     updateLogin(state, value) {
       state.login = value
+    },
+    initialiseStore(state) {
+      if (localStorage.getItem('tourBeendet')) {
+        state.tourCurrent.beendet = true
+      }
     }
   },
   actions: {
@@ -114,6 +125,9 @@ export default new Vuex.Store({
     updateTourCurrentGestartet(context, value) {
       context.commit('updateTourCurrentGestartet', value)
     },
+    updateTourCurrentBeendet(context, value) {
+      context.commit('updateTourCurrentBeendet', value)
+    },
     updateTourCurrentUebertragungAbgeschlossen(context, value) {
       context.commit('updateTourCurrentUebertragungAbgeschlossen', value)
     },
@@ -130,6 +144,7 @@ export default new Vuex.Store({
     tourCurrentAbschnitte: state => state.tourCurrent.tour.tourAbschnitte,
     tourCurrentAktuelleTourVonDatenbankErhalten: state => state.tourCurrent.aktuelleTourVonDatenbankErhalten,
     tourCurrentGestartet: state => state.tourCurrent.gestartet,
+    tourCurrentBeendet: state => state.tourCurrent.beendet,
     tourCurrentUebertragungAbgeschlossen: state => state.tourCurrent.uebertragungAnDatenbankAbgeschlossen,
     login: state => state.login
   }

@@ -1,5 +1,8 @@
 <template>
   <div id="app">
+    
+    <apiSendeAbgeschlosseneTour ref="apiSendeAbgeschlosseneTour" />
+
     <!-- login falls nicht eingeloggt -->
     <login
       v-if="!this.$store.getters.tourCurrentAktuelleTourVonDatenbankErhalten"
@@ -21,6 +24,7 @@
       >
         <small> Aktuelle Nachricht an Fahrer*in</small>
       </v-alert>
+
 
       <!-- Progress Bar -->
       <v-progress-linear
@@ -327,7 +331,6 @@
     <!-- tourBeendet-Dialog -->
     <tourBeendet @tourReset="tourReset()" />
 
-    <apiSendeAbgeschlosseneTour ref="apiSendeAbgeschlosseneTour" />
   </div>
 </template>
 
@@ -370,7 +373,8 @@ export default {
   components: {
     tourBeendet, //Popup sobald tour beendet ist
     apiSendeAbgeschlosseneTour,
-    login
+    login,
+    apiSendeAbgeschlosseneTour
   },
   computed: {
     tourAbschnitte() {
@@ -434,6 +438,7 @@ export default {
         }
       } else {
         //Tour beenden
+        this.$store.dispatch('updateTourCurrentBeendet', true)
         this.$emit('stopTimer')
         this.tourFahrerInput.tourStop = new Date()
           .toISOString()
@@ -441,6 +446,7 @@ export default {
         this.tourFahrerInput.fahrerId = this.tourGesamt.fahrerId
         this.tourFahrerInput.benutzer = this.$store.getters.login.benutzerHashed
         this.tourFahrerInput.passwort = this.$store.getters.login.passwortHashed
+        localStorage.setItem('tourFahrerInput', JSON.stringify(this.tourFahrerInput))
         this.$store.dispatch('dialogUpdateTourBeendet', true)
         try {
           const position = await this.getGpsLocation()

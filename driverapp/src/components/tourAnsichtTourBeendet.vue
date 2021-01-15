@@ -68,7 +68,9 @@ export default {
       this.$emit('tourReset')
     }
   },
-  components: {}
+  components: {},
+  mounted () {
+  }
 }
 </script>
 
